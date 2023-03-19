@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:retro_snake/assets/AssetsColors.dart';
 import 'package:retro_snake/game_constants.dart';
 import 'package:retro_snake/snake.dart';
@@ -90,12 +91,29 @@ class GameBoard extends StatelessWidget {
   Widget build(BuildContext context) {
     boardSize = MediaQuery.of(context).size.height * 0.8;
     boardCellSize = boardSize / GameConstants.boardCellsNumber;
-    return Container(
-      width: boardSize,
-      height: boardSize,
-      decoration: BoxDecoration(color: Color(0xff9370DB)),
-      child: Stack(
-        children: draw(snake, boardCellSize),
+    return RawKeyboardListener(
+      autofocus: true,
+      onKey: (event) {
+        if (event is RawKeyDownEvent) {
+          if (event.isKeyPressed(LogicalKeyboardKey.arrowUp)) {
+            print('up');
+          } else if (event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
+            print('down');
+          } else if (event.isKeyPressed(LogicalKeyboardKey.arrowLeft)) {
+            print('left');
+          } else if (event.isKeyPressed(LogicalKeyboardKey.arrowRight)) {
+            print('right');
+          }
+        }
+      },
+      focusNode: FocusNode(),
+      child: Container(
+        width: boardSize,
+        height: boardSize,
+        decoration: BoxDecoration(color: Color(0xff9370DB)),
+        child: Stack(
+          children: draw(snake, boardCellSize),
+        ),
       ),
     );
   }
