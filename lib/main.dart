@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:retro_snake/assets/AssetsColors.dart';
 import 'package:retro_snake/game_constants.dart';
-import 'package:retro_snake/snake.dart';
+import 'package:retro_snake/model/snake.dart';
+import 'package:retro_snake/model/snake_body_part.dart';
 
-import 'direction.dart';
+import 'model/enums/direction.dart';
+import 'model/enums/snake_body_part_type.dart';
 
 void main() {
   runApp(const MyApp());
@@ -36,41 +38,19 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class GameBoard extends StatelessWidget {
+class GameBoard extends StatefulWidget {
   GameBoard({Key? key}) : super(key: key);
 
+  @override
+  State<GameBoard> createState() => _GameBoardState();
+}
+
+class _GameBoardState extends State<GameBoard> {
   late double boardSize;
+
   late double boardCellSize;
 
-  Snake snake = Snake(
-    direction: Direction.down,
-    bodyParts: [
-      SnakeBodyPart(
-          xCellPosition: 5,
-          yCellPosition: 5,
-          bodyPartType: SnakeBodyPartType.head),
-      SnakeBodyPart(
-          xCellPosition: 6,
-          yCellPosition: 5,
-          bodyPartType: SnakeBodyPartType.body),
-      SnakeBodyPart(
-          xCellPosition: 7,
-          yCellPosition: 5,
-          bodyPartType: SnakeBodyPartType.body),
-      SnakeBodyPart(
-          xCellPosition: 8,
-          yCellPosition: 5,
-          bodyPartType: SnakeBodyPartType.body),
-      SnakeBodyPart(
-          xCellPosition: 9,
-          yCellPosition: 5,
-          bodyPartType: SnakeBodyPartType.body),
-      SnakeBodyPart(
-          xCellPosition: 10,
-          yCellPosition: 5,
-          bodyPartType: SnakeBodyPartType.body),
-    ],
-  );
+  Snake snake = GameConstants.defaultSnake;
 
   List<Widget> draw(
     Snake snake,
@@ -87,6 +67,64 @@ class GameBoard extends StatelessWidget {
         .toList();
   }
 
+  void moveSnake(Direction direction) {
+    setState(() {
+      snake = getNewSnakePosition(snake, direction);
+    });
+  }
+
+  Snake getNewSnakePosition(Snake snake, Direction direction) {
+    switch (direction) {
+      case Direction.up:
+        SnakeBodyPart newHead = SnakeBodyPart(
+            xCellPosition: snake.bodyParts.first.xCellPosition,
+            yCellPosition: snake.bodyParts.first.yCellPosition - 1,
+            bodyPartType: SnakeBodyPartType.head);
+
+        List<SnakeBodyPart> newBodyParts = calculateNewBodyPosition(snake);
+        return Snake(
+            direction: direction, bodyParts: [newHead, ...newBodyParts]);
+      case Direction.down:
+        SnakeBodyPart newHead = SnakeBodyPart(
+            xCellPosition: snake.bodyParts.first.xCellPosition,
+            yCellPosition: snake.bodyParts.first.yCellPosition + 1,
+            bodyPartType: SnakeBodyPartType.head);
+        List<SnakeBodyPart> newBodyParts = calculateNewBodyPosition(snake);
+        return Snake(
+            direction: direction, bodyParts: [newHead, ...newBodyParts]);
+      case Direction.left:
+        SnakeBodyPart newHead = SnakeBodyPart(
+            xCellPosition: snake.bodyParts.first.xCellPosition - 1,
+            yCellPosition: snake.bodyParts.first.yCellPosition,
+            bodyPartType: SnakeBodyPartType.head);
+
+        List<SnakeBodyPart> newBodyParts = calculateNewBodyPosition(snake);
+        return Snake(
+            direction: direction, bodyParts: [newHead, ...newBodyParts]);
+      case Direction.right:
+        SnakeBodyPart newHead = SnakeBodyPart(
+            xCellPosition: snake.bodyParts.first.xCellPosition + 1,
+            yCellPosition: snake.bodyParts.first.yCellPosition,
+            bodyPartType: SnakeBodyPartType.head);
+        List<SnakeBodyPart> newBodyParts = calculateNewBodyPosition(snake);
+        return Snake(
+            direction: direction, bodyParts: [newHead, ...newBodyParts]);
+    }
+  }
+
+  List<SnakeBodyPart> calculateNewBodyPosition(Snake snake) {
+    List<SnakeBodyPart> newBodyParts = [];
+    snake.bodyParts.asMap().forEach((key, value) {
+      if (key != snake.bodyParts.length - 1) {
+        newBodyParts.add(SnakeBodyPart(
+            xCellPosition: snake.bodyParts[key].xCellPosition,
+            yCellPosition: snake.bodyParts[key].yCellPosition,
+            bodyPartType: SnakeBodyPartType.body));
+      }
+    });
+    return newBodyParts;
+  }
+
   @override
   Widget build(BuildContext context) {
     boardSize = MediaQuery.of(context).size.height * 0.8;
@@ -96,12 +134,16 @@ class GameBoard extends StatelessWidget {
       onKey: (event) {
         if (event is RawKeyDownEvent) {
           if (event.isKeyPressed(LogicalKeyboardKey.arrowUp)) {
+            moveSnake(Direction.up);
             print('up');
           } else if (event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
+            moveSnake(Direction.down);
             print('down');
           } else if (event.isKeyPressed(LogicalKeyboardKey.arrowLeft)) {
+            moveSnake(Direction.left);
             print('left');
           } else if (event.isKeyPressed(LogicalKeyboardKey.arrowRight)) {
+            moveSnake(Direction.right);
             print('right');
           }
         }
