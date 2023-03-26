@@ -11,7 +11,7 @@ import 'model/enums/snake_body_part_type.dart';
 import 'model/snake.dart';
 import 'widgets/snake_body_part_widget.dart';
 
-class GameBoard extends ConsumerWidget {
+class GameBoard extends ConsumerStatefulWidget {
   const GameBoard({Key? key}) : super(key: key);
 
   List<Widget> draw(
@@ -30,7 +30,27 @@ class GameBoard extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() {
+    return GameBoardState();
+  }
+}
+
+class GameBoardState extends ConsumerState<GameBoard> {
+  @override
+  void initState() {
+    super.initState();
+    Stream.periodic(const Duration(milliseconds: 500)).listen((event) {
+      ref.read(snakeProvider.notifier).moveSnake();
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     double boardSize = MediaQuery.of(context).size.height * 0.8;
     double boardCellSize = boardSize / GameConstants.boardCellsNumber;
 
@@ -42,13 +62,13 @@ class GameBoard extends ConsumerWidget {
       onKey: (event) {
         if (event is RawKeyDownEvent) {
           if (event.isKeyPressed(LogicalKeyboardKey.arrowUp)) {
-            snakeNotifier.moveSnake(Direction.up);
+            snakeNotifier.changeDirection(Direction.up);
           } else if (event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
-            snakeNotifier.moveSnake(Direction.down);
+            snakeNotifier.changeDirection(Direction.down);
           } else if (event.isKeyPressed(LogicalKeyboardKey.arrowLeft)) {
-            snakeNotifier.moveSnake(Direction.left);
+            snakeNotifier.changeDirection(Direction.left);
           } else if (event.isKeyPressed(LogicalKeyboardKey.arrowRight)) {
-            snakeNotifier.moveSnake(Direction.right);
+            snakeNotifier.changeDirection(Direction.right);
           }
         }
       },
@@ -58,7 +78,7 @@ class GameBoard extends ConsumerWidget {
         height: boardSize,
         decoration: const BoxDecoration(color: Color(0xff9370DB)),
         child: Stack(
-          children: draw(snake, boardCellSize),
+          children: widget.draw(snake, boardCellSize),
         ),
       ),
     );

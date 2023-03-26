@@ -1,3 +1,4 @@
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:retro_snake/model/snake.dart';
 
@@ -9,12 +10,16 @@ import '../../model/snake_body_part.dart';
 class SnakeNotifier extends StateNotifier<Snake> {
   SnakeNotifier() : super(GameConstants.defaultSnake);
 
-  void moveSnake(Direction direction) {
-    state = _getNewSnakePosition(state, direction);
+  void moveSnake() {
+    state = _getNewSnakePosition(state);
   }
 
-  Snake _getNewSnakePosition(Snake snake, Direction direction) {
-    switch (direction) {
+  void changeDirection(Direction newDirection) {
+    state = Snake(direction: newDirection, bodyParts: [...state.bodyParts]);
+  }
+
+  Snake _getNewSnakePosition(Snake snake) {
+    switch (snake.direction) {
       case Direction.up:
         SnakeBodyPart newHead = SnakeBodyPart(
             xCellPosition: snake.bodyParts.first.xCellPosition,
@@ -23,7 +28,7 @@ class SnakeNotifier extends StateNotifier<Snake> {
 
         List<SnakeBodyPart> newBodyParts = _calculateNewBodyPosition(snake);
         return Snake(
-            direction: direction, bodyParts: [newHead, ...newBodyParts]);
+            direction: snake.direction, bodyParts: [newHead, ...newBodyParts]);
       case Direction.down:
         SnakeBodyPart newHead = SnakeBodyPart(
             xCellPosition: snake.bodyParts.first.xCellPosition,
@@ -31,7 +36,7 @@ class SnakeNotifier extends StateNotifier<Snake> {
             bodyPartType: SnakeBodyPartType.head);
         List<SnakeBodyPart> newBodyParts = _calculateNewBodyPosition(snake);
         return Snake(
-            direction: direction, bodyParts: [newHead, ...newBodyParts]);
+            direction: snake.direction, bodyParts: [newHead, ...newBodyParts]);
       case Direction.left:
         SnakeBodyPart newHead = SnakeBodyPart(
             xCellPosition: snake.bodyParts.first.xCellPosition - 1,
@@ -40,7 +45,7 @@ class SnakeNotifier extends StateNotifier<Snake> {
 
         List<SnakeBodyPart> newBodyParts = _calculateNewBodyPosition(snake);
         return Snake(
-            direction: direction, bodyParts: [newHead, ...newBodyParts]);
+            direction: snake.direction, bodyParts: [newHead, ...newBodyParts]);
       case Direction.right:
         SnakeBodyPart newHead = SnakeBodyPart(
             xCellPosition: snake.bodyParts.first.xCellPosition + 1,
@@ -48,7 +53,7 @@ class SnakeNotifier extends StateNotifier<Snake> {
             bodyPartType: SnakeBodyPartType.head);
         List<SnakeBodyPart> newBodyParts = _calculateNewBodyPosition(snake);
         return Snake(
-            direction: direction, bodyParts: [newHead, ...newBodyParts]);
+            direction: snake.direction, bodyParts: [newHead, ...newBodyParts]);
     }
   }
 
@@ -63,5 +68,10 @@ class SnakeNotifier extends StateNotifier<Snake> {
       }
     });
     return newBodyParts;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

@@ -4,7 +4,7 @@ import 'model/snake.dart';
 import 'model/snake_body_part.dart';
 
 class GameConstants {
-  static const boardCellsNumber = 50;
+  static const boardCellsNumber = 30;
   static const Snake defaultSnake = Snake(
     direction: Direction.right,
     bodyParts: [
