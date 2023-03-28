@@ -1,0 +1,1 @@
+enum SnakeBodyPartType { head, body }
