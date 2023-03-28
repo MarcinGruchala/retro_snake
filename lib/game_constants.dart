@@ -1,3 +1,4 @@
+import 'model/cell_position.dart';
 import 'model/enums/direction.dart';
 import 'model/enums/snake_body_part_type.dart';
 import 'model/snake.dart';
@@ -9,28 +10,22 @@ class GameConstants {
     direction: Direction.right,
     bodyParts: [
       SnakeBodyPart(
-          xCellPosition: 5,
-          yCellPosition: 5,
+          cellPosition: CellPosition(x: 5, y: 5),
           bodyPartType: SnakeBodyPartType.head),
       SnakeBodyPart(
-          xCellPosition: 6,
-          yCellPosition: 5,
+          cellPosition: CellPosition(x: 6, y: 5),
           bodyPartType: SnakeBodyPartType.body),
       SnakeBodyPart(
-          xCellPosition: 7,
-          yCellPosition: 5,
+          cellPosition: CellPosition(x: 7, y: 5),
           bodyPartType: SnakeBodyPartType.body),
       SnakeBodyPart(
-          xCellPosition: 8,
-          yCellPosition: 5,
+          cellPosition: CellPosition(x: 8, y: 5),
           bodyPartType: SnakeBodyPartType.body),
       SnakeBodyPart(
-          xCellPosition: 9,
-          yCellPosition: 5,
+          cellPosition: CellPosition(x: 9, y: 5),
           bodyPartType: SnakeBodyPartType.body),
       SnakeBodyPart(
-          xCellPosition: 10,
-          yCellPosition: 5,
+          cellPosition: CellPosition(x: 10, y: 5),
           bodyPartType: SnakeBodyPartType.body),
     ],
   );

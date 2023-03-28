@@ -7,6 +7,7 @@ import 'package:retro_snake/widgets/food_widget.dart';
 
 import 'assets/AssetsColors.dart';
 import 'game_constants.dart';
+import 'model/cell_position.dart';
 import 'model/enums/direction.dart';
 import 'model/enums/snake_body_part_type.dart';
 import 'model/food.dart';
@@ -26,13 +27,13 @@ class GameBoard extends ConsumerStatefulWidget {
             color: e.bodyPartType == SnakeBodyPartType.head
                 ? AssetsColors.yellow
                 : AssetsColors.green,
-            xPosition: e.xCellPosition * boardCellSize,
-            yPosition: e.yCellPosition * boardCellSize,
+            xPosition: e.cellPosition.x * boardCellSize,
+            yPosition: e.cellPosition.y * boardCellSize,
             size: boardCellSize))
         .toList();
     Widget foodWidget = FoodWidget(
-        xPosition: food.xCellPosition * boardCellSize,
-        yPosition: food.yCellPosition * boardCellSize,
+        xPosition: food.cellPosition.x * boardCellSize,
+        yPosition: food.cellPosition.y * boardCellSize,
         size: boardCellSize);
     return [foodWidget, ...snakeWidgets];
   }
@@ -44,11 +45,16 @@ class GameBoard extends ConsumerStatefulWidget {
 }
 
 class GameBoardState extends ConsumerState<GameBoard> {
+
+  bool hasSnakeEatenFood = false;
+
   @override
   void initState() {
     super.initState();
-    Stream.periodic(const Duration(milliseconds: 500)).listen((event) {
+    Stream.periodic(const Duration(milliseconds: 300)).listen((event) {
       ref.read(snakeProvider.notifier).moveSnake();
+      hasSnakeEatenFood = false;
+
     });
   }
 
@@ -65,7 +71,16 @@ class GameBoardState extends ConsumerState<GameBoard> {
     SnakeNotifier snakeNotifier = ref.read(snakeProvider.notifier);
     Snake snake = ref.watch(snakeProvider);
 
-    Food food = Food(xCellPosition: 25, yCellPosition: 25);
+    Food food = const Food(cellPosition: CellPosition(x: 25, y: 25));
+
+    if (snake.bodyParts.first.cellPosition == food.cellPosition) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!hasSnakeEatenFood) {
+          snakeNotifier.eat(snake.direction);
+          hasSnakeEatenFood = true;
+        }
+      });
+    }
 
     return RawKeyboardListener(
       autofocus: true,

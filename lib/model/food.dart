@@ -1,9 +1,11 @@
+import 'package:flutter/foundation.dart';
+import 'package:retro_snake/model/cell_position.dart';
+
+@immutable
 class Food {
-  final int xCellPosition;
-  final int yCellPosition;
+  final CellPosition cellPosition;
 
   const Food({
-    required this.xCellPosition,
-    required this.yCellPosition,
+    required this.cellPosition,
   });
 }
