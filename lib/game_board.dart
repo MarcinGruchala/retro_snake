@@ -3,11 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:retro_snake/provider/snake/snake_notifier.dart';
 import 'package:retro_snake/provider/snake/snake_provider.dart';
+import 'package:retro_snake/widgets/food_widget.dart';
 
 import 'assets/AssetsColors.dart';
 import 'game_constants.dart';
 import 'model/enums/direction.dart';
 import 'model/enums/snake_body_part_type.dart';
+import 'model/food.dart';
 import 'model/snake.dart';
 import 'widgets/snake_body_part_widget.dart';
 
@@ -16,9 +18,10 @@ class GameBoard extends ConsumerStatefulWidget {
 
   List<Widget> draw(
     Snake snake,
+    Food food,
     double boardCellSize,
   ) {
-    return snake.bodyParts
+    List<Widget> snakeWidgets = snake.bodyParts
         .map((e) => SnakeBodyPartWidget(
             color: e.bodyPartType == SnakeBodyPartType.head
                 ? AssetsColors.yellow
@@ -27,6 +30,11 @@ class GameBoard extends ConsumerStatefulWidget {
             yPosition: e.yCellPosition * boardCellSize,
             size: boardCellSize))
         .toList();
+    Widget foodWidget = FoodWidget(
+        xPosition: food.xCellPosition * boardCellSize,
+        yPosition: food.yCellPosition * boardCellSize,
+        size: boardCellSize);
+    return [foodWidget, ...snakeWidgets];
   }
 
   @override
@@ -57,6 +65,8 @@ class GameBoardState extends ConsumerState<GameBoard> {
     SnakeNotifier snakeNotifier = ref.read(snakeProvider.notifier);
     Snake snake = ref.watch(snakeProvider);
 
+    Food food = Food(xCellPosition: 25, yCellPosition: 25);
+
     return RawKeyboardListener(
       autofocus: true,
       onKey: (event) {
@@ -78,7 +88,7 @@ class GameBoardState extends ConsumerState<GameBoard> {
         height: boardSize,
         decoration: const BoxDecoration(color: Color(0xff9370DB)),
         child: Stack(
-          children: widget.draw(snake, boardCellSize),
+          children: widget.draw(snake, food, boardCellSize),
         ),
       ),
     );
