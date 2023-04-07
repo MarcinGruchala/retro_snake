@@ -5,6 +5,7 @@ import '../../game_constants.dart';
 import '../../model/enums/direction.dart';
 import '../../model/enums/snake_body_part_type.dart';
 import '../../model/snake_body_part.dart';
+import '../../utils/move_cell.dart';
 
 class SnakeNotifier extends StateNotifier<Snake> {
   SnakeNotifier() : super(GameConstants.defaultSnake);
@@ -12,38 +13,38 @@ class SnakeNotifier extends StateNotifier<Snake> {
   void moveSnake() {
     SnakeBodyPart newHead = _moveHead(state.direction, state.bodyParts.first);
     List<SnakeBodyPart> newBodyParts = _moveBodyParts(state);
-
-    state = Snake(
-        direction: state.direction, bodyParts: [newHead, ...newBodyParts]);
+    if (state.eat) {
+      _digest(newHead);
+    } else {
+      state = state.copyWith(bodyParts: [newHead, ...newBodyParts]);
+    }
   }
 
   void changeDirection(Direction newDirection) {
-    state = Snake(direction: newDirection, bodyParts: [...state.bodyParts]);
+    state = state.copyWith(direction: newDirection);
+  }
+
+  void eat(Direction direction) {
+    state = state.copyWith(eat: true);
+  }
+
+  void _digest(SnakeBodyPart newHead) {
+    state = state.copyWith(
+      bodyParts: [
+        newHead,
+        SnakeBodyPart(
+            cellPosition: state.bodyParts.first.cellPosition,
+            bodyPartType: SnakeBodyPartType.body),
+        ...state.bodyParts.getRange(1, state.bodyParts.length)
+      ],
+      eat: false,
+    );
   }
 
   SnakeBodyPart _moveHead(Direction direction, SnakeBodyPart head) {
-    switch (direction) {
-      case Direction.up:
-        return SnakeBodyPart(
-            xCellPosition: head.xCellPosition,
-            yCellPosition: head.yCellPosition - 1,
-            bodyPartType: SnakeBodyPartType.head);
-      case Direction.down:
-        return SnakeBodyPart(
-            xCellPosition: head.xCellPosition,
-            yCellPosition: head.yCellPosition + 1,
-            bodyPartType: SnakeBodyPartType.head);
-      case Direction.left:
-        return SnakeBodyPart(
-            xCellPosition: head.xCellPosition - 1,
-            yCellPosition: head.yCellPosition,
-            bodyPartType: SnakeBodyPartType.head);
-      case Direction.right:
-        return SnakeBodyPart(
-            xCellPosition: head.xCellPosition + 1,
-            yCellPosition: head.yCellPosition,
-            bodyPartType: SnakeBodyPartType.head);
-    }
+    return SnakeBodyPart(
+        cellPosition: moveCell(head.cellPosition, direction),
+        bodyPartType: SnakeBodyPartType.head);
   }
 
   List<SnakeBodyPart> _moveBodyParts(Snake snake) {
@@ -51,8 +52,7 @@ class SnakeNotifier extends StateNotifier<Snake> {
     snake.bodyParts.asMap().forEach((key, value) {
       if (key != snake.bodyParts.length - 1) {
         newBodyParts.add(SnakeBodyPart(
-            xCellPosition: snake.bodyParts[key].xCellPosition,
-            yCellPosition: snake.bodyParts[key].yCellPosition,
+            cellPosition: snake.bodyParts[key].cellPosition,
             bodyPartType: SnakeBodyPartType.body));
       }
     });

@@ -3,11 +3,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:retro_snake/provider/snake/snake_notifier.dart';
 import 'package:retro_snake/provider/snake/snake_provider.dart';
+import 'package:retro_snake/utils/get_random_cell_position.dart';
+import 'package:retro_snake/widgets/food_widget.dart';
 
 import 'assets/AssetsColors.dart';
 import 'game_constants.dart';
+import 'model/cell_position.dart';
 import 'model/enums/direction.dart';
 import 'model/enums/snake_body_part_type.dart';
+import 'model/food.dart';
 import 'model/snake.dart';
 import 'widgets/snake_body_part_widget.dart';
 
@@ -16,17 +20,23 @@ class GameBoard extends ConsumerStatefulWidget {
 
   List<Widget> draw(
     Snake snake,
+    Food food,
     double boardCellSize,
   ) {
-    return snake.bodyParts
+    List<Widget> snakeWidgets = snake.bodyParts
         .map((e) => SnakeBodyPartWidget(
             color: e.bodyPartType == SnakeBodyPartType.head
                 ? AssetsColors.yellow
                 : AssetsColors.green,
-            xPosition: e.xCellPosition * boardCellSize,
-            yPosition: e.yCellPosition * boardCellSize,
+            xPosition: e.cellPosition.x * boardCellSize,
+            yPosition: e.cellPosition.y * boardCellSize,
             size: boardCellSize))
         .toList();
+    Widget foodWidget = FoodWidget(
+        xPosition: food.cellPosition.x * boardCellSize,
+        yPosition: food.cellPosition.y * boardCellSize,
+        size: boardCellSize);
+    return [foodWidget, ...snakeWidgets];
   }
 
   @override
@@ -36,17 +46,31 @@ class GameBoard extends ConsumerStatefulWidget {
 }
 
 class GameBoardState extends ConsumerState<GameBoard> {
+  bool hasSnakeEatenFood = false;
+  Food food = const Food(cellPosition: CellPosition(x: 25, y: 25));
+
   @override
   void initState() {
     super.initState();
-    Stream.periodic(const Duration(milliseconds: 500)).listen((event) {
+    Stream.periodic(const Duration(milliseconds: 300)).listen((event) {
       ref.read(snakeProvider.notifier).moveSnake();
+      hasSnakeEatenFood = false;
     });
   }
 
   @override
   void dispose() {
     super.dispose();
+  }
+
+  Food _getNewFood(Snake snake) {
+    while (true) {
+      Food newFood = Food(cellPosition: getRandomCellPosition());
+      if (snake.bodyParts
+          .every((element) => element.cellPosition != newFood.cellPosition)) {
+        return newFood;
+      }
+    }
   }
 
   @override
@@ -56,6 +80,18 @@ class GameBoardState extends ConsumerState<GameBoard> {
 
     SnakeNotifier snakeNotifier = ref.read(snakeProvider.notifier);
     Snake snake = ref.watch(snakeProvider);
+
+    if (snake.bodyParts.first.cellPosition == food.cellPosition) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!hasSnakeEatenFood) {
+          snakeNotifier.eat(snake.direction);
+          setState(() {
+            food = _getNewFood(snake);
+          });
+          hasSnakeEatenFood = true;
+        }
+      });
+    }
 
     return RawKeyboardListener(
       autofocus: true,
@@ -78,7 +114,7 @@ class GameBoardState extends ConsumerState<GameBoard> {
         height: boardSize,
         decoration: const BoxDecoration(color: Color(0xff9370DB)),
         child: Stack(
-          children: widget.draw(snake, boardCellSize),
+          children: widget.draw(snake, food, boardCellSize),
         ),
       ),
     );
