@@ -1,7 +1,8 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
 @immutable
-class CellPosition {
+class CellPosition extends Equatable {
   final int x;
   final int y;
 
@@ -11,13 +12,5 @@ class CellPosition {
   });
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is CellPosition &&
-          runtimeType == other.runtimeType &&
-          x == other.x &&
-          y == other.y;
-
-  @override
-  int get hashCode => x.hashCode ^ y.hashCode;
+  List<Object?> get props => [x, y];
 }

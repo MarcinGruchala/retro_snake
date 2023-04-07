@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:retro_snake/provider/snake/snake_notifier.dart';
 import 'package:retro_snake/provider/snake/snake_provider.dart';
+import 'package:retro_snake/utils/get_random_cell_position.dart';
 import 'package:retro_snake/widgets/food_widget.dart';
 
 import 'assets/AssetsColors.dart';
@@ -45,8 +46,8 @@ class GameBoard extends ConsumerStatefulWidget {
 }
 
 class GameBoardState extends ConsumerState<GameBoard> {
-
   bool hasSnakeEatenFood = false;
+  Food food = const Food(cellPosition: CellPosition(x: 25, y: 25));
 
   @override
   void initState() {
@@ -54,13 +55,22 @@ class GameBoardState extends ConsumerState<GameBoard> {
     Stream.periodic(const Duration(milliseconds: 300)).listen((event) {
       ref.read(snakeProvider.notifier).moveSnake();
       hasSnakeEatenFood = false;
-
     });
   }
 
   @override
   void dispose() {
     super.dispose();
+  }
+
+  Food _getNewFood(Snake snake) {
+    while (true) {
+      Food newFood = Food(cellPosition: getRandomCellPosition());
+      if (snake.bodyParts
+          .every((element) => element.cellPosition != newFood.cellPosition)) {
+        return newFood;
+      }
+    }
   }
 
   @override
@@ -71,12 +81,13 @@ class GameBoardState extends ConsumerState<GameBoard> {
     SnakeNotifier snakeNotifier = ref.read(snakeProvider.notifier);
     Snake snake = ref.watch(snakeProvider);
 
-    Food food = const Food(cellPosition: CellPosition(x: 25, y: 25));
-
     if (snake.bodyParts.first.cellPosition == food.cellPosition) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!hasSnakeEatenFood) {
           snakeNotifier.eat(snake.direction);
+          setState(() {
+            food = _getNewFood(snake);
+          });
           hasSnakeEatenFood = true;
         }
       });
