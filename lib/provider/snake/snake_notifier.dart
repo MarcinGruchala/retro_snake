@@ -2,10 +2,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:retro_snake/model/snake.dart';
 
 import '../../game_constants.dart';
-import '../../model/cell_position.dart';
 import '../../model/enums/direction.dart';
 import '../../model/enums/snake_body_part_type.dart';
 import '../../model/snake_body_part.dart';
+import '../../utils/move_cell.dart';
 
 class SnakeNotifier extends StateNotifier<Snake> {
   SnakeNotifier() : super(GameConstants.defaultSnake);
@@ -13,77 +13,38 @@ class SnakeNotifier extends StateNotifier<Snake> {
   void moveSnake() {
     SnakeBodyPart newHead = _moveHead(state.direction, state.bodyParts.first);
     List<SnakeBodyPart> newBodyParts = _moveBodyParts(state);
-
-    state = Snake(
-        direction: state.direction, bodyParts: [newHead, ...newBodyParts]);
+    if (state.eat) {
+      _digest(newHead);
+    } else {
+      state = state.copyWith(bodyParts: [newHead, ...newBodyParts]);
+    }
   }
 
   void changeDirection(Direction newDirection) {
-    state = Snake(direction: newDirection, bodyParts: [...state.bodyParts]);
+    state = state.copyWith(direction: newDirection);
   }
 
   void eat(Direction direction) {
-    state = Snake(direction: state.direction, bodyParts: [
-      ...state.bodyParts,
-      _appendBodyPart(state.direction, state.bodyParts.last)
-    ]);
+    state = state.copyWith(eat: true);
   }
 
-  SnakeBodyPart _appendBodyPart(
-    Direction direction,
-    SnakeBodyPart lastBodyPart,
-  ) {
-    switch (direction) {
-      case Direction.up:
-        return SnakeBodyPart(
-            cellPosition: CellPosition(
-                x: lastBodyPart.cellPosition.x,
-                y: lastBodyPart.cellPosition.y + 1),
-            bodyPartType: SnakeBodyPartType.body);
-      case Direction.down:
-        return SnakeBodyPart(
-            cellPosition: CellPosition(
-                x: lastBodyPart.cellPosition.x,
-                y: lastBodyPart.cellPosition.y - 1),
-            bodyPartType: SnakeBodyPartType.body);
-      case Direction.left:
-        return SnakeBodyPart(
-            cellPosition: CellPosition(
-                x: lastBodyPart.cellPosition.x + 1,
-                y: lastBodyPart.cellPosition.y),
-            bodyPartType: SnakeBodyPartType.body);
-      case Direction.right:
-        return SnakeBodyPart(
-            cellPosition: CellPosition(
-                x: lastBodyPart.cellPosition.x - 1,
-                y: lastBodyPart.cellPosition.y),
-            bodyPartType: SnakeBodyPartType.body);
-    }
+  void _digest(SnakeBodyPart newHead) {
+    state = state.copyWith(
+      bodyParts: [
+        newHead,
+        SnakeBodyPart(
+            cellPosition: state.bodyParts.first.cellPosition,
+            bodyPartType: SnakeBodyPartType.body),
+        ...state.bodyParts.getRange(1, state.bodyParts.length)
+      ],
+      eat: false,
+    );
   }
 
   SnakeBodyPart _moveHead(Direction direction, SnakeBodyPart head) {
-    switch (direction) {
-      case Direction.up:
-        return SnakeBodyPart(
-            cellPosition: CellPosition(
-                x: head.cellPosition.x, y: head.cellPosition.y - 1),
-            bodyPartType: SnakeBodyPartType.head);
-      case Direction.down:
-        return SnakeBodyPart(
-            cellPosition: CellPosition(
-                x: head.cellPosition.x, y: head.cellPosition.y + 1),
-            bodyPartType: SnakeBodyPartType.head);
-      case Direction.left:
-        return SnakeBodyPart(
-            cellPosition: CellPosition(
-                x: head.cellPosition.x - 1, y: head.cellPosition.y),
-            bodyPartType: SnakeBodyPartType.head);
-      case Direction.right:
-        return SnakeBodyPart(
-            cellPosition: CellPosition(
-                x: head.cellPosition.x + 1, y: head.cellPosition.y),
-            bodyPartType: SnakeBodyPartType.head);
-    }
+    return SnakeBodyPart(
+        cellPosition: moveCell(head.cellPosition, direction),
+        bodyPartType: SnakeBodyPartType.head);
   }
 
   List<SnakeBodyPart> _moveBodyParts(Snake snake) {

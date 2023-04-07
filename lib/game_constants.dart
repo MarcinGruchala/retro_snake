@@ -28,5 +28,6 @@ class GameConstants {
           cellPosition: CellPosition(x: 10, y: 5),
           bodyPartType: SnakeBodyPartType.body),
     ],
+    eat: false,
   );
 }
