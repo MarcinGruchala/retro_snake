@@ -48,19 +48,42 @@ class GameBoard extends ConsumerStatefulWidget {
 class GameBoardState extends ConsumerState<GameBoard> {
   bool hasSnakeEatenFood = false;
   Food food = const Food(cellPosition: CellPosition(x: 25, y: 25));
+  bool isGameOver = false;
 
   @override
   void initState() {
     super.initState();
-    Stream.periodic(const Duration(milliseconds: 300)).listen((event) {
-      ref.read(snakeProvider.notifier).moveSnake();
-      hasSnakeEatenFood = false;
+    Stream.periodic(const Duration(milliseconds: 200)).listen((event) {
+      if (!isGameOver) {
+        ref.read(snakeProvider.notifier).moveSnake();
+        hitDetection(ref.read(snakeProvider));
+        hasSnakeEatenFood = false;
+      }
     });
   }
 
   @override
   void dispose() {
     super.dispose();
+  }
+
+  void hitDetection(Snake snake) {
+    if (_checkSnakeHit(snake) ||
+        _checkWallHit(snake.bodyParts.first.cellPosition)) {
+      isGameOver = true;
+    }
+  }
+
+  bool _checkSnakeHit(Snake snake) {
+    return snake.bodyParts.getRange(1, snake.bodyParts.length).any((element) =>
+        element.cellPosition == snake.bodyParts.first.cellPosition);
+  }
+
+  bool _checkWallHit(CellPosition snakeHeadPosition) {
+    return snakeHeadPosition.x < 0 ||
+        snakeHeadPosition.x >= GameConstants.boardCellsNumber ||
+        snakeHeadPosition.y < 0 ||
+        snakeHeadPosition.y >= GameConstants.boardCellsNumber;
   }
 
   Food _getNewFood(Snake snake) {
@@ -114,7 +137,23 @@ class GameBoardState extends ConsumerState<GameBoard> {
         height: boardSize,
         decoration: const BoxDecoration(color: Color(0xff9370DB)),
         child: Stack(
-          children: widget.draw(snake, food, boardCellSize),
+          children: [
+            ...widget.draw(snake, food, boardCellSize),
+            if (isGameOver)
+              Center(
+                child: Container(
+                  color: Colors.black.withOpacity(0.5),
+                  padding: const EdgeInsets.all(20),
+                  child: const Text(
+                    'Game Over',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 30,
+                    ),
+                  ),
+                ),
+              )
+          ],
         ),
       ),
     );
