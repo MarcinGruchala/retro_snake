@@ -11,7 +11,7 @@ class HomePage extends StatelessWidget {
         backgroundColor: const Color(0xff4B0082),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [Center(child: GameBoard())],
+          children: const [Center(child: GameBoardWidget())],
         ));
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:retro_snake/model/snake.dart';
+import 'package:retro_snake/provider/snake/snake.dart';
 
 import '../../game_constants.dart';
 import '../../model/enums/direction.dart';

@@ -1,7 +1,9 @@
+import 'package:retro_snake/model/food.dart';
+
 import 'model/cell_position.dart';
 import 'model/enums/direction.dart';
 import 'model/enums/snake_body_part_type.dart';
-import 'model/snake.dart';
+import 'provider/snake/snake.dart';
 import 'model/snake_body_part.dart';
 
 class GameConstants {
@@ -30,4 +32,6 @@ class GameConstants {
     ],
     eat: false,
   );
+  static const defaultFood = Food(cellPosition: CellPosition(x: 25, y: 25));
+  static const gameFrameDuration = Duration(milliseconds: 100);
 }
