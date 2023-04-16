@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:retro_snake/model/snake.dart';
+import 'package:retro_snake/provider/snake/snake.dart';
 
 import '../../game_constants.dart';
 import '../../model/enums/direction.dart';
@@ -26,6 +26,10 @@ class SnakeNotifier extends StateNotifier<Snake> {
 
   void eat(Direction direction) {
     state = state.copyWith(eat: true);
+  }
+
+  void setToDefault() {
+    state = GameConstants.defaultSnake;
   }
 
   void _digest(SnakeBodyPart newHead) {

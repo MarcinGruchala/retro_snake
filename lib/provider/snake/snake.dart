@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 
-import 'enums/direction.dart';
-import 'snake_body_part.dart';
+import '../../model/enums/direction.dart';
+import '../../model/snake_body_part.dart';
 
 @immutable
 class Snake extends Equatable {

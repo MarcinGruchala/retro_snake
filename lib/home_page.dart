@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:retro_snake/assets/assets.dart';
 
 import 'game_board.dart';
 
@@ -7,11 +8,9 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: const Color(0xff4B0082),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [Center(child: GameBoard())],
-        ));
+    return const Scaffold(
+      backgroundColor: AssetsColors.darkGreen,
+      body: Center(child: GameBoardWidget()),
+    );
   }
 }
