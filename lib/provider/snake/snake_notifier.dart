@@ -21,10 +21,7 @@ class SnakeNotifier extends StateNotifier<Snake> {
   }
 
   void changeDirection(Direction newDirection) {
-    if (state.direction != newDirection &&
-        state.direction != opposingDirection[newDirection]) {
-      state = state.copyWith(direction: newDirection);
-    }
+    state = state.copyWith(direction: newDirection);
   }
 
   void eat(Direction direction) {
