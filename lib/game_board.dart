@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:retro_snake/assets/assets.dart';
-import 'package:retro_snake/assets/assets_fonts.dart';
 import 'package:retro_snake/model/enums/game_status.dart';
 import 'package:retro_snake/provider/food/food_notifier.dart';
 import 'package:retro_snake/provider/food/food_provider.dart';
@@ -22,6 +21,7 @@ import 'model/food.dart';
 import 'provider/game_board_state_provider.dart';
 import 'provider/snake/snake.dart';
 import 'utils/hit_detection.dart';
+import 'utils/input_and_direction.dart';
 import 'widgets/snake_body_part_widget.dart';
 
 class GameBoardWidget extends ConsumerStatefulWidget {
@@ -53,6 +53,8 @@ class GameBoardWidget extends ConsumerStatefulWidget {
 }
 
 class GameBoardWidgetState extends ConsumerState<GameBoardWidget> {
+  final List<Direction> _enteredDirections = [];
+
   @override
   void initState() {
     super.initState();
@@ -64,9 +66,18 @@ class GameBoardWidgetState extends ConsumerState<GameBoardWidget> {
 
   void _performGameFrame(GameStatus gameStatus) {
     if (gameStatus == GameStatus.running) {
+      _readNextMove();
       ref.read(snakeProvider.notifier).moveSnake();
       _hitDetection(ref.read(snakeProvider));
       ref.read(gameSessionProvider.notifier).snakeHasMoved();
+    }
+  }
+
+  void _readNextMove() {
+    if (_enteredDirections.isNotEmpty) {
+      Direction nextDirection =
+          takeFirstValidDirection(ref.read(snakeProvider), _enteredDirections);
+      ref.read(snakeProvider.notifier).changeDirection(nextDirection);
     }
   }
 
@@ -84,6 +95,7 @@ class GameBoardWidgetState extends ConsumerState<GameBoardWidget> {
     ref.read(snakeProvider.notifier).setToDefault();
     ref.read(foodProvider.notifier).setToDefault();
     ref.read(gameSessionProvider.notifier).resetGame();
+    _enteredDirections.clear();
   }
 
   @override
@@ -115,14 +127,8 @@ class GameBoardWidgetState extends ConsumerState<GameBoardWidget> {
       autofocus: true,
       onKey: (event) {
         if (event is RawKeyDownEvent) {
-          if (event.isKeyPressed(LogicalKeyboardKey.arrowUp)) {
-            snakeNotifier.changeDirection(Direction.up);
-          } else if (event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
-            snakeNotifier.changeDirection(Direction.down);
-          } else if (event.isKeyPressed(LogicalKeyboardKey.arrowLeft)) {
-            snakeNotifier.changeDirection(Direction.left);
-          } else if (event.isKeyPressed(LogicalKeyboardKey.arrowRight)) {
-            snakeNotifier.changeDirection(Direction.right);
+          if (listOfDirectionKeys.contains(event.logicalKey)) {
+            _enteredDirections.add(mapOfDirectionKeys[event.logicalKey]!);
           }
         }
       },
