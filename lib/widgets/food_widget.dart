@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:retro_snake/assets/AssetsColors.dart';
+import 'package:retro_snake/assets/assets_colors.dart';
 
 class FoodWidget extends StatelessWidget {
   final double xPosition;

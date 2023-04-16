@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:retro_snake/assets/assets.dart';
+import 'package:retro_snake/assets/assets_fonts.dart';
 import 'package:retro_snake/model/enums/game_status.dart';
 import 'package:retro_snake/provider/food/food_notifier.dart';
 import 'package:retro_snake/provider/food/food_provider.dart';
 import 'package:retro_snake/provider/game_session/game_session.dart';
+import 'package:retro_snake/provider/game_session/game_session_notifier.dart';
 import 'package:retro_snake/provider/game_session/game_session_provider.dart';
 import 'package:retro_snake/provider/snake/snake_notifier.dart';
 import 'package:retro_snake/provider/snake/snake_provider.dart';
 import 'package:retro_snake/widgets/food_widget.dart';
 import 'package:retro_snake/widgets/game_board/game_board_state.dart';
+import 'package:retro_snake/widgets/game_board/game_launcher_dialog.dart';
+import 'package:retro_snake/widgets/game_board/game_over_dialog.dart';
 
-import 'assets/AssetsColors.dart';
 import 'game_constants.dart';
 import 'model/enums/direction.dart';
-import 'model/enums/snake_body_part_type.dart';
 import 'model/food.dart';
 import 'provider/game_board_state_provider.dart';
 import 'provider/snake/snake.dart';
@@ -31,9 +34,7 @@ class GameBoardWidget extends ConsumerStatefulWidget {
   ) {
     List<Widget> snakeWidgets = snake.bodyParts
         .map((e) => SnakeBodyPartWidget(
-            color: e.bodyPartType == SnakeBodyPartType.head
-                ? AssetsColors.yellow
-                : AssetsColors.green,
+            color: AssetsColors.black,
             xPosition: e.cellPosition.x * boardCellSize,
             yPosition: e.cellPosition.y * boardCellSize,
             size: boardCellSize))
@@ -76,6 +77,15 @@ class GameBoardWidgetState extends ConsumerState<GameBoardWidget> {
     }
   }
 
+  int _calculateScore(Snake snake) =>
+      snake.bodyParts.length - GameConstants.defaultSnake.bodyParts.length;
+
+  void _restartGame() {
+    ref.read(snakeProvider.notifier).setToDefault();
+    ref.read(foodProvider.notifier).setToDefault();
+    ref.read(gameSessionProvider.notifier).resetGame();
+  }
+
   @override
   Widget build(BuildContext context) {
     double boardSize = MediaQuery.of(context).size.height * 0.8;
@@ -83,6 +93,8 @@ class GameBoardWidgetState extends ConsumerState<GameBoardWidget> {
 
     SnakeNotifier snakeNotifier = ref.read(snakeProvider.notifier);
     FoodNotifier foodNotifier = ref.read(foodProvider.notifier);
+    GameSessionNotifier gameSessionNotifier =
+        ref.read(gameSessionProvider.notifier);
 
     GameBoardState gameBoardState = ref.watch(gameBoardStateProvider);
     Snake snake = gameBoardState.snake;
@@ -115,29 +127,38 @@ class GameBoardWidgetState extends ConsumerState<GameBoardWidget> {
         }
       },
       focusNode: FocusNode(),
-      child: Container(
-        width: boardSize,
-        height: boardSize,
-        decoration: const BoxDecoration(color: Color(0xff9370DB)),
-        child: Stack(
-          children: [
-            ...widget.draw(snake, food, boardCellSize),
-            if (gameSession.gameStatus == GameStatus.over)
-              Center(
-                child: Container(
-                  color: Colors.black.withOpacity(0.5),
-                  padding: const EdgeInsets.all(20),
-                  child: const Text(
-                    'Game Over',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 30,
-                    ),
-                  ),
-                ),
-              )
-          ],
-        ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Text(
+            AssetsStrings.score(_calculateScore(snake)),
+            style: AssetsFonts.h1(AssetsColors.black),
+          ),
+          Container(
+            decoration: BoxDecoration(
+                color: AssetsColors.black,
+                border: Border.all(color: AssetsColors.black, width: 3)),
+            child: Container(
+              width: boardSize,
+              height: boardSize,
+              decoration: const BoxDecoration(color: AssetsColors.darkGreen),
+              child: Stack(
+                children: [
+                  ...widget.draw(snake, food, boardCellSize),
+                  if (gameSession.gameStatus == GameStatus.none) ...[
+                    Center(
+                        child: GameLauncherDialog(
+                            onStartGamePressed: () =>
+                                gameSessionNotifier.startGame()))
+                  ],
+                  if (gameSession.gameStatus == GameStatus.over) ...[
+                    Center(child: GameOverDialog(onTryAgain: _restartGame))
+                  ],
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

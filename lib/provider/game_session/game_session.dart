@@ -12,7 +12,7 @@ class GameSession extends Equatable {
       {required this.gameStatus, required this.hasSnakeEatenFood});
 
   static const initial = GameSession(
-    gameStatus: GameStatus.running,
+    gameStatus: GameStatus.none,
     hasSnakeEatenFood: false,
   );
 

@@ -14,6 +14,10 @@ class GameSessionNotifier extends StateNotifier<GameSession> {
     state = state.copyWith(gameStatus: GameStatus.over);
   }
 
+  void resetGame() {
+    state = GameSession.initial;
+  }
+
   void snakeHasEatenFood() {
     state = state.copyWith(hasSnakeEatenFood: true);
   }

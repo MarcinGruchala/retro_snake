@@ -28,6 +28,10 @@ class SnakeNotifier extends StateNotifier<Snake> {
     state = state.copyWith(eat: true);
   }
 
+  void setToDefault() {
+    state = GameConstants.defaultSnake;
+  }
+
   void _digest(SnakeBodyPart newHead) {
     state = state.copyWith(
       bodyParts: [

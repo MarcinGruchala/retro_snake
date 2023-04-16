@@ -18,4 +18,8 @@ class FoodNotifier extends StateNotifier<Food> {
       }
     }
   }
+
+  void setToDefault() {
+    state = GameConstants.defaultFood;
+  }
 }

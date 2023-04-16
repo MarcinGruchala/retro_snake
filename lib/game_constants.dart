@@ -7,7 +7,7 @@ import 'provider/snake/snake.dart';
 import 'model/snake_body_part.dart';
 
 class GameConstants {
-  static const boardCellsNumber = 30;
+  static const boardCellsNumber = 20;
   static const Snake defaultSnake = Snake(
     direction: Direction.down,
     bodyParts: [
@@ -32,6 +32,6 @@ class GameConstants {
     ],
     eat: false,
   );
-  static const defaultFood = Food(cellPosition: CellPosition(x: 25, y: 25));
-  static const gameFrameDuration = Duration(milliseconds: 100);
+  static const defaultFood = Food(cellPosition: CellPosition(x: 15, y: 15));
+  static const gameFrameDuration = Duration(milliseconds: 200);
 }
