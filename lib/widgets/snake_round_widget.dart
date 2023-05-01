@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:retro_snake/model/enums/direction.dart';
 
-const headRadiusFactor = 0.5;
+const radiusFactor = 0.5;
 
-class SnakeHeadWidget extends StatelessWidget {
+class SnakeRoundWidget extends StatelessWidget {
   final double xPosition;
   final double yPosition;
   final double size;
   final Color color;
   final Direction direction;
 
-  const SnakeHeadWidget({
+  const SnakeRoundWidget({
     super.key,
     required this.xPosition,
     required this.yPosition,
@@ -23,19 +23,19 @@ class SnakeHeadWidget extends StatelessWidget {
     switch (direction) {
       case Direction.up:
         return BorderRadius.vertical(
-          top: Radius.circular(size / headRadiusFactor),
+          top: Radius.circular(size / radiusFactor),
         );
       case Direction.down:
         return BorderRadius.vertical(
-          bottom: Radius.circular(size / headRadiusFactor),
+          bottom: Radius.circular(size / radiusFactor),
         );
       case Direction.left:
         return BorderRadius.horizontal(
-          left: Radius.circular(size / headRadiusFactor),
+          left: Radius.circular(size / radiusFactor),
         );
       case Direction.right:
         return BorderRadius.horizontal(
-          right: Radius.circular(size / headRadiusFactor),
+          right: Radius.circular(size / radiusFactor),
         );
     }
   }
