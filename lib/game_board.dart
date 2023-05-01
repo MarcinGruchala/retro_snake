@@ -14,9 +14,11 @@ import 'package:retro_snake/widgets/food_widget.dart';
 import 'package:retro_snake/widgets/game_board/game_board_state.dart';
 import 'package:retro_snake/widgets/game_board/game_launcher_dialog.dart';
 import 'package:retro_snake/widgets/game_board/game_over_dialog.dart';
+import 'package:retro_snake/widgets/snake_head_widget.dart';
 
 import 'game_constants.dart';
 import 'model/enums/direction.dart';
+import 'model/enums/snake_body_part_type.dart';
 import 'model/food.dart';
 import 'provider/game_board_state_provider.dart';
 import 'provider/snake/snake.dart';
@@ -32,13 +34,22 @@ class GameBoardWidget extends ConsumerStatefulWidget {
     Food food,
     double boardCellSize,
   ) {
-    List<Widget> snakeWidgets = snake.bodyParts
-        .map((e) => SnakeBodyPartWidget(
-            color: AssetsColors.black,
+    List<Widget> snakeWidgets = snake.bodyParts.map((e) {
+      if (e.bodyPartType == SnakeBodyPartType.head) {
+        return SnakeHeadWidget(
             xPosition: e.cellPosition.x * boardCellSize,
             yPosition: e.cellPosition.y * boardCellSize,
-            size: boardCellSize))
-        .toList();
+            size: boardCellSize,
+            color: AssetsColors.black,
+            direction: snake.direction);
+      }
+      return SnakeBodyPartWidget(
+        xPosition: e.cellPosition.x * boardCellSize,
+        yPosition: e.cellPosition.y * boardCellSize,
+        size: boardCellSize,
+        color: AssetsColors.black,
+      );
+    }).toList();
     Widget foodWidget = FoodWidget(
         xPosition: food.cellPosition.x * boardCellSize,
         yPosition: food.cellPosition.y * boardCellSize,
