@@ -6,26 +6,29 @@ import '../../model/enums/game_status.dart';
 @immutable
 class GameSession extends Equatable {
   final GameStatus gameStatus;
-  final bool hasSnakeEatenFood;
+  final int score;
 
-  const GameSession(
-      {required this.gameStatus, required this.hasSnakeEatenFood});
+  const GameSession({
+    required this.gameStatus,
+    required this.score,
+  });
 
   static const initial = GameSession(
     gameStatus: GameStatus.none,
-    hasSnakeEatenFood: false,
+    score: 0,
   );
 
   GameSession copyWith({
     GameStatus? gameStatus,
     bool? hasSnakeEatenFood,
+    int? score,
   }) {
     return GameSession(
       gameStatus: gameStatus ?? this.gameStatus,
-      hasSnakeEatenFood: hasSnakeEatenFood ?? this.hasSnakeEatenFood,
+      score: score ?? this.score,
     );
   }
 
   @override
-  List<Object?> get props => [gameStatus, hasSnakeEatenFood];
+  List<Object?> get props => [gameStatus, score];
 }

@@ -28,6 +28,8 @@ class Snake extends Equatable {
     );
   }
 
+  SnakeBodyPart get head => bodyParts.first;
+
   Direction calculateTailDirection() {
     final tailBodyPartPosition = bodyParts.last.cellPosition;
     final penultimateBodyPartPosition =

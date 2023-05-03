@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:retro_snake/assets/assets_colors.dart';
+import 'package:retro_snake/widgets/common/text/retro_text_p1.dart';
+
+import 'common/text/retro_text.dart';
 
 class FoodWidget extends StatefulWidget {
   final double xPosition;
   final double yPosition;
   final double size;
+  final int score;
 
   static const scaleAnimationSize = 0.6;
 
@@ -13,6 +17,7 @@ class FoodWidget extends StatefulWidget {
     required this.xPosition,
     required this.yPosition,
     required this.size,
+    required this.score,
   }) : super(key: key);
 
   @override
@@ -58,8 +63,15 @@ class _FoodWidgetState extends State<FoodWidget>
             shape: BoxShape.circle,
             color: AssetsColors.black,
           ),
+          padding: const EdgeInsets.all(1),
           width: widget.size,
           height: widget.size,
+          child: Center(
+            child: RetroText(
+              widget.score.toString(),
+              color: AssetsColors.darkGreen, fontSize: widget.size * 0.6,
+            ),
+          ),
         ),
       ),
     );

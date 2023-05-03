@@ -4,7 +4,7 @@ import '../provider/snake/snake.dart';
 
 bool checkSnakeHit(Snake snake) {
   return snake.bodyParts.getRange(1, snake.bodyParts.length).any(
-      (element) => element.cellPosition == snake.bodyParts.first.cellPosition);
+      (element) => element.cellPosition == snake.head.cellPosition);
 }
 
 bool checkWallHit(CellPosition snakeHeadPosition) {
