@@ -6,4 +6,5 @@ class AssetsStrings {
   static const String moveInstruction = 'To  move  use  keyboard  arrows:';
 
   static String score(int score) => 'Score $score';
+  static String version(String version) => 'Version  $version';
 }
