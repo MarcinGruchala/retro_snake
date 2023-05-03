@@ -14,9 +14,11 @@ import 'package:retro_snake/widgets/food_widget.dart';
 import 'package:retro_snake/widgets/game_board/game_board_state.dart';
 import 'package:retro_snake/widgets/game_board/game_launcher_dialog.dart';
 import 'package:retro_snake/widgets/game_board/game_over_dialog.dart';
+import 'package:retro_snake/widgets/snake_round_widget.dart';
 
 import 'game_constants.dart';
 import 'model/enums/direction.dart';
+import 'model/enums/snake_body_part_type.dart';
 import 'model/food.dart';
 import 'provider/game_board_state_provider.dart';
 import 'provider/snake/snake.dart';
@@ -32,13 +34,30 @@ class GameBoardWidget extends ConsumerStatefulWidget {
     Food food,
     double boardCellSize,
   ) {
-    List<Widget> snakeWidgets = snake.bodyParts
-        .map((e) => SnakeBodyPartWidget(
+    List<Widget> snakeWidgets = snake.bodyParts.asMap().entries.map((entry) {
+      if (entry.value.bodyPartType == SnakeBodyPartType.head) {
+        return SnakeRoundWidget(
+            xPosition: entry.value.cellPosition.x * boardCellSize,
+            yPosition: entry.value.cellPosition.y * boardCellSize,
+            size: boardCellSize,
             color: AssetsColors.black,
-            xPosition: e.cellPosition.x * boardCellSize,
-            yPosition: e.cellPosition.y * boardCellSize,
-            size: boardCellSize))
-        .toList();
+            direction: snake.direction);
+      }
+      if (entry.key == snake.bodyParts.length - 1) {
+        return SnakeRoundWidget(
+            xPosition: entry.value.cellPosition.x * boardCellSize,
+            yPosition: entry.value.cellPosition.y * boardCellSize,
+            size: boardCellSize,
+            direction: snake.calculateTailDirection(),
+            color: AssetsColors.black);
+      }
+      return SnakeBodyPartWidget(
+        xPosition: entry.value.cellPosition.x * boardCellSize,
+        yPosition: entry.value.cellPosition.y * boardCellSize,
+        size: boardCellSize,
+        color: AssetsColors.black,
+      );
+    }).toList();
     Widget foodWidget = FoodWidget(
         xPosition: food.cellPosition.x * boardCellSize,
         yPosition: food.cellPosition.y * boardCellSize,

@@ -28,6 +28,29 @@ class Snake extends Equatable {
     );
   }
 
+  Direction calculateTailDirection() {
+    final tailBodyPartPosition = bodyParts.last.cellPosition;
+    final penultimateBodyPartPosition =
+        bodyParts[bodyParts.length - 2].cellPosition;
+    if (tailBodyPartPosition.x == penultimateBodyPartPosition.x &&
+        tailBodyPartPosition.y == penultimateBodyPartPosition.y - 1) {
+      return Direction.up;
+    }
+    if (tailBodyPartPosition.x == penultimateBodyPartPosition.x &&
+        tailBodyPartPosition.y == penultimateBodyPartPosition.y + 1) {
+      return Direction.down;
+    }
+    if (tailBodyPartPosition.x == penultimateBodyPartPosition.x - 1 &&
+        tailBodyPartPosition.y == penultimateBodyPartPosition.y) {
+      return Direction.left;
+    }
+    if (tailBodyPartPosition.x == penultimateBodyPartPosition.x + 1 &&
+        tailBodyPartPosition.y == penultimateBodyPartPosition.y) {
+      return Direction.right;
+    }
+    return Direction.up;
+  }
+
   @override
   List<Object?> get props => [direction, bodyParts];
 }
