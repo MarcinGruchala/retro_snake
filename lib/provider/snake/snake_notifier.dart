@@ -24,7 +24,7 @@ class SnakeNotifier extends StateNotifier<Snake> {
     state = state.copyWith(direction: newDirection);
   }
 
-  void eat(Direction direction) {
+  void eat() {
     state = state.copyWith(eat: true);
   }
 

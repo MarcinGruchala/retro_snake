@@ -10,12 +10,21 @@ class FoodNotifier extends StateNotifier<Food> {
 
   void generateNewFood(Snake snake) {
     while (true) {
-      Food newFood = Food(cellPosition: getRandomCellPosition());
+      Food newFood = Food(
+        cellPosition: getRandomCellPosition(),
+        score: GameConstants.foodDefaultScore,
+      );
       if (snake.bodyParts
           .every((element) => element.cellPosition != newFood.cellPosition)) {
         state = newFood;
         break;
       }
+    }
+  }
+
+  void lowerScoreIfPossible() {
+    if (state.score > 1) {
+      state = state.copyWith(score: state.score - 1);
     }
   }
 

@@ -59,9 +59,11 @@ class GameBoardWidget extends ConsumerStatefulWidget {
       );
     }).toList();
     Widget foodWidget = FoodWidget(
-        xPosition: food.cellPosition.x * boardCellSize,
-        yPosition: food.cellPosition.y * boardCellSize,
-        size: boardCellSize);
+      xPosition: food.cellPosition.x * boardCellSize,
+      yPosition: food.cellPosition.y * boardCellSize,
+      size: boardCellSize,
+      score: food.score,
+    );
     return [foodWidget, ...snakeWidgets];
   }
 
@@ -78,37 +80,63 @@ class GameBoardWidgetState extends ConsumerState<GameBoardWidget> {
   void initState() {
     super.initState();
     Stream.periodic(GameConstants.gameFrameDuration).listen((event) {
-      _performGameFrame(
-          ref.watch(gameBoardStateProvider).gameSession.gameStatus);
+      _performGameFrame();
     });
   }
 
-  void _performGameFrame(GameStatus gameStatus) {
-    if (gameStatus == GameStatus.running) {
-      _readNextMove();
-      ref.read(snakeProvider.notifier).moveSnake();
-      _hitDetection(ref.read(snakeProvider));
-      ref.read(gameSessionProvider.notifier).snakeHasMoved();
+  void _performGameFrame() {
+    SnakeNotifier snakeNotifier = ref.read(snakeProvider.notifier);
+    FoodNotifier foodNotifier = ref.read(foodProvider.notifier);
+    GameSessionNotifier gameSessionNotifier =
+        ref.read(gameSessionProvider.notifier);
+
+    final gameBoardState = ref.watch(gameBoardStateProvider);
+
+    if (gameBoardState.gameSession.gameStatus == GameStatus.running) {
+      _updateSnakeDirection(gameBoardState.snake, snakeNotifier);
+      snakeNotifier.moveSnake();
+      _handleHitDetection(gameBoardState.snake, gameSessionNotifier);
+      _handleFood(
+        gameBoardState,
+        snakeNotifier,
+        foodNotifier,
+        gameSessionNotifier,
+      );
     }
   }
 
-  void _readNextMove() {
+  void _updateSnakeDirection(Snake snake, SnakeNotifier snakeNotifier) {
     if (_enteredDirections.isNotEmpty) {
       Direction nextDirection =
-          takeFirstValidDirection(ref.read(snakeProvider), _enteredDirections);
-      ref.read(snakeProvider.notifier).changeDirection(nextDirection);
+          takeFirstValidDirection(snake, _enteredDirections);
+      snakeNotifier.changeDirection(nextDirection);
     }
   }
 
-  void _hitDetection(Snake snake) {
-    if (checkSnakeHit(snake) ||
-        checkWallHit(snake.bodyParts.first.cellPosition)) {
-      ref.read(gameSessionProvider.notifier).finishGame();
+  void _handleHitDetection(
+      Snake snake, GameSessionNotifier gameSessionNotifier) {
+    if (checkSnakeHit(snake) || checkWallHit(snake.head.cellPosition)) {
+      gameSessionNotifier.finishGame();
     }
   }
 
-  int _calculateScore(Snake snake) =>
-      snake.bodyParts.length - GameConstants.defaultSnake.bodyParts.length;
+  void _handleFood(
+    GameBoardState gameBoardState,
+    SnakeNotifier snakeNotifier,
+    FoodNotifier foodNotifier,
+    GameSessionNotifier gameSessionNotifier,
+  ) {
+    if (_checkFoodHit(gameBoardState.snake, gameBoardState.food)) {
+      snakeNotifier.eat();
+      gameSessionNotifier.addScore(gameBoardState.food.score);
+      foodNotifier.generateNewFood(gameBoardState.snake);
+    }
+    foodNotifier.lowerScoreIfPossible();
+  }
+
+  bool _checkFoodHit(Snake snake, Food food) {
+    return snake.head.cellPosition == food.cellPosition;
+  }
 
   void _restartGame() {
     ref.read(snakeProvider.notifier).setToDefault();
@@ -117,30 +145,19 @@ class GameBoardWidgetState extends ConsumerState<GameBoardWidget> {
     _enteredDirections.clear();
   }
 
+  void _startGame() {
+    ref.read(gameSessionProvider.notifier).startGame();
+  }
+
   @override
   Widget build(BuildContext context) {
     double boardSize = MediaQuery.of(context).size.height * 0.8;
     double boardCellSize = boardSize / GameConstants.boardCellsNumber;
 
-    SnakeNotifier snakeNotifier = ref.read(snakeProvider.notifier);
-    FoodNotifier foodNotifier = ref.read(foodProvider.notifier);
-    GameSessionNotifier gameSessionNotifier =
-        ref.read(gameSessionProvider.notifier);
-
     GameBoardState gameBoardState = ref.watch(gameBoardStateProvider);
     Snake snake = gameBoardState.snake;
     Food food = gameBoardState.food;
     GameSession gameSession = gameBoardState.gameSession;
-
-    if (snake.bodyParts.first.cellPosition == food.cellPosition) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!gameSession.hasSnakeEatenFood) {
-          snakeNotifier.eat(snake.direction);
-          foodNotifier.generateNewFood(snake);
-          ref.read(gameSessionProvider.notifier).snakeHasEatenFood();
-        }
-      });
-    }
 
     return RawKeyboardListener(
       autofocus: true,
@@ -156,7 +173,7 @@ class GameBoardWidgetState extends ConsumerState<GameBoardWidget> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Text(
-            AssetsStrings.score(_calculateScore(snake)),
+            AssetsStrings.score(gameSession.score),
             style: AssetsFonts.h1(AssetsColors.black),
           ),
           Container(
@@ -173,8 +190,7 @@ class GameBoardWidgetState extends ConsumerState<GameBoardWidget> {
                   if (gameSession.gameStatus == GameStatus.none) ...[
                     Center(
                         child: GameLauncherDialog(
-                            onStartGamePressed: () =>
-                                gameSessionNotifier.startGame()))
+                            onStartGamePressed: () => _startGame()))
                   ],
                   if (gameSession.gameStatus == GameStatus.over) ...[
                     Center(child: GameOverDialog(onTryAgain: _restartGame))

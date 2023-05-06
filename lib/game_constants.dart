@@ -9,29 +9,36 @@ import 'model/snake_body_part.dart';
 class GameConstants {
   static const boardCellsNumber = 20;
   static const Snake defaultSnake = Snake(
-    direction: Direction.down,
+    direction: Direction.right,
     bodyParts: [
       SnakeBodyPart(
-          cellPosition: CellPosition(x: 5, y: 5),
+          cellPosition: CellPosition(x: 9, y: 5),
           bodyPartType: SnakeBodyPartType.head),
       SnakeBodyPart(
-          cellPosition: CellPosition(x: 6, y: 5),
+          cellPosition: CellPosition(x: 8, y: 5),
           bodyPartType: SnakeBodyPartType.body),
       SnakeBodyPart(
           cellPosition: CellPosition(x: 7, y: 5),
           bodyPartType: SnakeBodyPartType.body),
       SnakeBodyPart(
-          cellPosition: CellPosition(x: 8, y: 5),
+          cellPosition: CellPosition(x: 6, y: 5),
           bodyPartType: SnakeBodyPartType.body),
       SnakeBodyPart(
-          cellPosition: CellPosition(x: 9, y: 5),
+          cellPosition: CellPosition(x: 5, y: 5),
           bodyPartType: SnakeBodyPartType.body),
       SnakeBodyPart(
-          cellPosition: CellPosition(x: 10, y: 5),
+          cellPosition: CellPosition(x: 4, y: 5),
+          bodyPartType: SnakeBodyPartType.body),
+      SnakeBodyPart(
+          cellPosition: CellPosition(x: 3, y: 5),
+          bodyPartType: SnakeBodyPartType.body),
+      SnakeBodyPart(
+          cellPosition: CellPosition(x: 2, y: 5),
           bodyPartType: SnakeBodyPartType.body),
     ],
     eat: false,
   );
-  static const defaultFood = Food(cellPosition: CellPosition(x: 15, y: 15));
+  static const foodDefaultScore = 20;
+  static const defaultFood = Food(cellPosition: CellPosition(x: 15, y: 15), score: foodDefaultScore);
   static const gameFrameDuration = Duration(milliseconds: 200);
 }
