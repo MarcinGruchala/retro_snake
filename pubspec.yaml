@@ -1,0 +1,38 @@
+name: retro_snake
+description: Retro style snake game
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+
+version: 0.1.0+1
+
+environment:
+  sdk: '>=2.19.2 <3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.2
+  equatable: ^2.0.3
+  firebase_core: ^2.11.0
+  flutter_riverpod: ^2.3.2
+  firebase_analytics: ^10.3.0
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.0
+
+flutter:
+
+  uses-material-design: true
+
+  fonts:
+    - family: ArcadeClassic
+      fonts:
+        - asset: assets/fonts/arcade-classic.ttf
+    - family: Arrows
+      fonts:
+        - asset: assets/fonts/arrows.ttf
