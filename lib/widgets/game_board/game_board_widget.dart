@@ -14,17 +14,17 @@ import 'package:retro_snake/widgets/food_widget.dart';
 import 'package:retro_snake/widgets/game_board/game_board_state.dart';
 import 'package:retro_snake/widgets/game_board/game_launcher_dialog.dart';
 import 'package:retro_snake/widgets/game_board/game_over_dialog.dart';
-import 'package:retro_snake/widgets/snake_round_widget.dart';
+import 'package:retro_snake/widgets/snake/snake_round_widget.dart';
 
-import 'game_constants.dart';
-import 'model/enums/direction.dart';
-import 'model/enums/snake_body_part_type.dart';
-import 'model/food.dart';
-import 'provider/game_board_state_provider.dart';
-import 'provider/snake/snake.dart';
-import 'utils/hit_detection.dart';
-import 'utils/input_and_direction.dart';
-import 'widgets/snake_body_part_widget.dart';
+import '../../game_constants.dart';
+import '../../model/enums/direction.dart';
+import '../../model/enums/snake_body_part_type.dart';
+import '../../model/food.dart';
+import '../../provider/game_board_state_provider.dart';
+import '../../provider/snake/snake.dart';
+import '../../utils/hit_detection.dart';
+import '../../utils/input_and_direction.dart';
+import '../snake/snake_body_part_widget.dart';
 
 class GameBoardWidget extends ConsumerStatefulWidget {
   const GameBoardWidget({Key? key}) : super(key: key);

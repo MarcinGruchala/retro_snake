@@ -4,7 +4,7 @@ import 'package:retro_snake/assets/assets.dart';
 import 'package:retro_snake/provider/version_provider.dart';
 import 'package:retro_snake/widgets/common/text/retro_text_p1.dart';
 
-import 'game_board.dart';
+import 'widgets/game_board/game_board_widget.dart';
 
 class HomePage extends ConsumerWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -20,11 +20,17 @@ class HomePage extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const GameBoardWidget(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Align(
+                    alignment: Alignment.center,
+                    child: const GameBoardWidget()),
+              ],
+            ),
             Align(
               alignment: Alignment.bottomRight,
-              child:
-                  RetroTextP1(AssetsStrings.version(version)),
+              child: RetroTextP1(AssetsStrings.version(version)),
             )
           ],
         ),
