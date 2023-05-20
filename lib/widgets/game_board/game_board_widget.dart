@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:retro_snake/assets/assets.dart';
+import 'package:retro_snake/assets/assets_decoration.dart';
 import 'package:retro_snake/model/enums/game_status.dart';
 import 'package:retro_snake/provider/food/food_notifier.dart';
 import 'package:retro_snake/provider/food/food_provider.dart';
@@ -177,9 +178,7 @@ class GameBoardWidgetState extends ConsumerState<GameBoardWidget> {
             style: AssetsFonts.h1(AssetsColors.black),
           ),
           Container(
-            decoration: BoxDecoration(
-                color: AssetsColors.black,
-                border: Border.all(color: AssetsColors.black, width: 3)),
+            decoration: AssetsDecoration.blackContainer,
             child: Container(
               width: boardSize,
               height: boardSize,
