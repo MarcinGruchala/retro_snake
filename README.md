@@ -4,7 +4,7 @@ Welcome to the repository for All New Retro Snake, a modern and enhanced take on
 
 ## Current State of Work
 
-As of the current release, version 0.1.0, the game is only available on the web. However, I am fervently working towards extending its accessibility to both Android and iOS platforms. You can play the current web version of the game by visiting my website [here](https://allnewretrosnake.com/#/).
+As of the current release, version 0.2.0, the game is only available on the web. However, I am fervently working towards extending its accessibility to both Android and iOS platforms. You can play the current web version of the game by visiting my website [here](https://allnewretrosnake.com/#/).
 
 ## Setup
 
