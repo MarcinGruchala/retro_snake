@@ -7,8 +7,11 @@ import '../common/text/retro_text_h2.dart';
 
 class GameOverDialog extends StatelessWidget {
   final Function() onTryAgain;
+  final bool isRecord;
 
-  const GameOverDialog({Key? key, required this.onTryAgain}) : super(key: key);
+  const GameOverDialog(
+      {Key? key, required this.onTryAgain, required this.isRecord})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +25,11 @@ class GameOverDialog extends StatelessWidget {
             AssetsStrings.gameOver,
           ),
           const SizedBox(height: 10),
+          if (isRecord)
+            const RetroTextH2(
+              AssetsStrings.newRecord,
+            ),
+          const SizedBox(height: 20),
           TextButton(
             onPressed: onTryAgain,
             child: const RetroTextP1(

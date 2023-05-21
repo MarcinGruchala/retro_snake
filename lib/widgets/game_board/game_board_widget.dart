@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:retro_snake/assets/assets.dart';
+import 'package:retro_snake/assets/assets_decoration.dart';
 import 'package:retro_snake/model/enums/game_status.dart';
 import 'package:retro_snake/provider/food/food_notifier.dart';
 import 'package:retro_snake/provider/food/food_provider.dart';
@@ -10,21 +11,22 @@ import 'package:retro_snake/provider/game_session/game_session_notifier.dart';
 import 'package:retro_snake/provider/game_session/game_session_provider.dart';
 import 'package:retro_snake/provider/snake/snake_notifier.dart';
 import 'package:retro_snake/provider/snake/snake_provider.dart';
+import 'package:retro_snake/utils/update_games_played.dart';
 import 'package:retro_snake/widgets/food_widget.dart';
 import 'package:retro_snake/widgets/game_board/game_board_state.dart';
 import 'package:retro_snake/widgets/game_board/game_launcher_dialog.dart';
 import 'package:retro_snake/widgets/game_board/game_over_dialog.dart';
-import 'package:retro_snake/widgets/snake_round_widget.dart';
+import 'package:retro_snake/widgets/snake/snake_round_widget.dart';
 
-import 'game_constants.dart';
-import 'model/enums/direction.dart';
-import 'model/enums/snake_body_part_type.dart';
-import 'model/food.dart';
-import 'provider/game_board_state_provider.dart';
-import 'provider/snake/snake.dart';
-import 'utils/hit_detection.dart';
-import 'utils/input_and_direction.dart';
-import 'widgets/snake_body_part_widget.dart';
+import '../../game_constants.dart';
+import '../../model/enums/direction.dart';
+import '../../model/enums/snake_body_part_type.dart';
+import '../../model/food.dart';
+import '../../provider/game_board_state_provider.dart';
+import '../../provider/snake/snake.dart';
+import '../../utils/hit_detection.dart';
+import '../../utils/input_and_direction.dart';
+import '../snake/snake_body_part_widget.dart';
 
 class GameBoardWidget extends ConsumerStatefulWidget {
   const GameBoardWidget({Key? key}) : super(key: key);
@@ -113,10 +115,10 @@ class GameBoardWidgetState extends ConsumerState<GameBoardWidget> {
     }
   }
 
-  void _handleHitDetection(
-      Snake snake, GameSessionNotifier gameSessionNotifier) {
+  Future<void> _handleHitDetection(
+      Snake snake, GameSessionNotifier gameSessionNotifier) async {
     if (checkSnakeHit(snake) || checkWallHit(snake.head.cellPosition)) {
-      gameSessionNotifier.finishGame();
+      await gameSessionNotifier.finishGame();
     }
   }
 
@@ -177,9 +179,7 @@ class GameBoardWidgetState extends ConsumerState<GameBoardWidget> {
             style: AssetsFonts.h1(AssetsColors.black),
           ),
           Container(
-            decoration: BoxDecoration(
-                color: AssetsColors.black,
-                border: Border.all(color: AssetsColors.black, width: 3)),
+            decoration: AssetsDecoration.blackContainer,
             child: Container(
               width: boardSize,
               height: boardSize,
@@ -193,7 +193,11 @@ class GameBoardWidgetState extends ConsumerState<GameBoardWidget> {
                             onStartGamePressed: () => _startGame()))
                   ],
                   if (gameSession.gameStatus == GameStatus.over) ...[
-                    Center(child: GameOverDialog(onTryAgain: _restartGame))
+                    Center(
+                        child: GameOverDialog(
+                      onTryAgain: _restartGame,
+                      isRecord: gameSession.isRecord,
+                    ))
                   ],
                 ],
               ),
