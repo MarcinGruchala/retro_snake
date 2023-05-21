@@ -40,5 +40,5 @@ class GameConstants {
   );
   static const foodDefaultScore = 20;
   static const defaultFood = Food(cellPosition: CellPosition(x: 15, y: 15), score: foodDefaultScore);
-  static const gameFrameDuration = Duration(milliseconds: 200);
+  static const gameFrameDuration = Duration(milliseconds: 150);
 }
