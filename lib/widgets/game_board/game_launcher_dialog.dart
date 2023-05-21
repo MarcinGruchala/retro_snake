@@ -23,9 +23,9 @@ class GameLauncherDialog extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           const RetroTextP1(AssetsStrings.moveInstruction),
-          Row(
+          const Row(
             mainAxisSize: MainAxisSize.min,
-            children: const [
+            children: [
               Icon(AssetsIcons.arrowLeft, color: AssetsColors.black),
               Icon(AssetsIcons.arrowRight, color: AssetsColors.black),
               Icon(AssetsIcons.arrowUp, color: AssetsColors.black),
