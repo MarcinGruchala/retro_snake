@@ -5,6 +5,7 @@ class AssetsStrings {
   static const String moveInstruction = 'To  move  use  keyboard  arrows:';
   static const String gameStats = 'Game  stats';
   static const String newRecord = 'New  record  !!!';
+  static const String sourceCode = 'Source code';
 
   static String score(int score) => 'Score $score';
 
