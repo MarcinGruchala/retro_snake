@@ -41,7 +41,7 @@ class GameStatsWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       width: 200,
-      decoration: AssetsDecoration.blackFrame,
+      decoration: blackFrame(context),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(

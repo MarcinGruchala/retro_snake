@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../assets/assets.dart';
+import 'common/ink_well_transparent.dart';
 import 'common/text/on_hover_text.dart';
 
 class OriginInfo extends StatelessWidget {
@@ -12,8 +13,9 @@ class OriginInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-        onTap: () => launchUrlString(_sourceCodeUrl),
-        child: OnHoverText(text: sourceCode));
+    return InkWellTransparent(
+      onTap: () => launchUrlString(_sourceCodeUrl),
+      child: OnHoverText(text: sourceCode),
+    );
   }
 }

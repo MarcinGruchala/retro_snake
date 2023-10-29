@@ -17,7 +17,7 @@ class GameOverDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(30),
-      decoration: boardDialogDecoration,
+      decoration: boardDialogDecoration(context),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

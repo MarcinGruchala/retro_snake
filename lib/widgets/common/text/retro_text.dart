@@ -14,6 +14,7 @@ class RetroText extends StatelessWidget {
       style: TextStyle(
         color: color,
         fontSize: fontSize,
+        overflow: TextOverflow.ellipsis,
         fontWeight: FontWeight.w300,
         fontFamily: 'ArcadeClassic',
       ),

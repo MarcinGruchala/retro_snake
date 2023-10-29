@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:retro_snake/theme/color_extension.dart';
 
 import '../../../assets/assets.dart';
 import '../child_widget_size.dart';
@@ -17,6 +18,7 @@ class OnHoverText extends ConsumerWidget {
   static const double _scaleFactor = 1.2;
   static const double _translateCorrection = 2.5; // Picked experimentally
   static const double _letterAvatarWidth = 14; // Picked experimentally
+  static const double _underlineHeight = 2;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -41,7 +43,8 @@ class OnHoverText extends ConsumerWidget {
               },
               child: Text(
                 text,
-                style: AssetsFonts.p1(AssetsColors.black),
+                overflow: TextOverflow.ellipsis,
+                style: AssetsFonts.p1(context.colors.primary),
               ),
             ),
           ),
@@ -49,9 +52,9 @@ class OnHoverText extends ConsumerWidget {
           Center(
             child: AnimatedContainer(
               duration: _animationDuration,
-              height: 2,
+              height: _underlineHeight,
               width: isHovered ? text.length * _letterAvatarWidth : 0,
-              color: AssetsColors.black,
+              color: context.colors.primary,
             ),
           )
         ],

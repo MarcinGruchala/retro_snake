@@ -5,7 +5,10 @@ class AssetsStrings {
   static const String moveInstruction = 'To  move  use  keyboard  arrows:';
   static const String gameStats = 'Game  stats';
   static const String newRecord = 'New  record  !!!';
-  static const String sourceCode = 'Source code';
+  static const String sourceCode = 'Source  code';
+  static const String displayMode = 'Display  Mode';
+  static const String displayModeClassic = 'CLASSIC';
+  static const String displayModeAlternative = 'ALTERNATIVE';
 
   static String score(int score) => 'Score $score';
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:retro_snake/assets/assets.dart';
-import 'package:retro_snake/assets/assets_icons.dart';
+import 'package:retro_snake/theme/color_extension.dart';
 import 'package:retro_snake/widgets/common/text/retro_text_p1.dart';
 
 import '../common/box_decoration.dart';
@@ -17,19 +17,19 @@ class GameLauncherDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: boardDialogDecoration,
+      decoration: boardDialogDecoration(context),
       padding: const EdgeInsets.all(20),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           const RetroTextP1(AssetsStrings.moveInstruction),
-          const Row(
+          Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(AssetsIcons.arrowLeft, color: AssetsColors.black),
-              Icon(AssetsIcons.arrowRight, color: AssetsColors.black),
-              Icon(AssetsIcons.arrowUp, color: AssetsColors.black),
-              Icon(AssetsIcons.arrowDown, color: AssetsColors.black),
+              Icon(AssetsIcons.arrowLeft, color: context.colors.primary),
+              Icon(AssetsIcons.arrowRight, color: context.colors.primary),
+              Icon(AssetsIcons.arrowUp, color: context.colors.primary),
+              Icon(AssetsIcons.arrowDown, color: context.colors.primary),
             ],
           ),
           TextButton(

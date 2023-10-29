@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:retro_snake/assets/assets_colors.dart';
-import 'package:retro_snake/widgets/common/text/retro_text_p1.dart';
+import 'package:retro_snake/theme/color_extension.dart';
 
 import 'common/text/retro_text.dart';
 
@@ -59,9 +58,9 @@ class _FoodWidgetState extends State<FoodWidget>
           );
         },
         child: Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: AssetsColors.black,
+            color: context.colors.primary,
           ),
           padding: const EdgeInsets.all(1),
           width: widget.size,
@@ -69,7 +68,8 @@ class _FoodWidgetState extends State<FoodWidget>
           child: Center(
             child: RetroText(
               widget.score.toString(),
-              color: AssetsColors.darkGreen, fontSize: widget.size * 0.6,
+              color: context.colors.background,
+              fontSize: widget.size * 0.6,
             ),
           ),
         ),

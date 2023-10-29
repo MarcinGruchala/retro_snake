@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:retro_snake/theme/color_extension.dart';
 
 import '../../../assets/assets.dart';
 
@@ -11,7 +12,8 @@ class RetroTextH2 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       data,
-      style: AssetsFonts.h2(AssetsColors.black),
+      overflow: TextOverflow.ellipsis,
+      style: AssetsFonts.h2(context.colors.primary),
     );
   }
 }

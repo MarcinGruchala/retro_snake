@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:retro_snake/theme/color_extension.dart';
 
 import '../../../assets/assets.dart';
 
@@ -12,7 +13,8 @@ class RetroTextP1 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       data,
-      style: AssetsFonts.p1(color ?? AssetsColors.black),
+      overflow: TextOverflow.ellipsis,
+      style: AssetsFonts.p1(color ?? context.colors.primary),
     );
   }
 }

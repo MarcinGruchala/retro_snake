@@ -1,0 +1,1 @@
+enum DisplayMode { classic, alternative }
