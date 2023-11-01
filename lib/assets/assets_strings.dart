@@ -9,10 +9,11 @@ class AssetsStrings {
   static const String displayMode = 'Display  Mode';
   static const String displayModeClassic = 'CLASSIC';
   static const String displayModeAlternative = 'ALTERNATIVE';
+  static const String allNew = 'All  new';
+  static const String retroSnake = 'Retro  Snake';
+  static const String version = '0.0.3';
 
   static String score(int score) => 'Score $score';
-
-  static String version(String version) => 'Version  $version';
 
   static String gamesPlayed(String data) => 'Games  played  $data';
 
