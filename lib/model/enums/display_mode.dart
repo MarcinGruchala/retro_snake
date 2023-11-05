@@ -1,1 +1,1 @@
-enum DisplayMode { classic, alternative }
+enum DisplayMode { classic, dark, light }

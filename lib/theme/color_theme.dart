@@ -6,11 +6,33 @@ import '../provider/display_mode.dart';
 
 final colorThemeProvider = Provider.autoDispose<ColorTheme>((ref) {
   final classicColorTheme = ref.read(classicColorThemeProvider);
-  final alternativeColorTheme = ref.read(alternativeColorThemeProvider);
+  final alternativeColorTheme = ref.read(lightColorThemeProvider);
+  final darkColorTheme = ref.read(darkColorThemeProvider);
 
-  return ref.watch(displayModeProvider) == DisplayMode.classic
-      ? classicColorTheme
-      : alternativeColorTheme;
+  switch (ref.watch(displayModeProvider)) {
+    case DisplayMode.dark:
+      return darkColorTheme;
+    case DisplayMode.light:
+      return alternativeColorTheme;
+    case DisplayMode.classic:
+      return classicColorTheme;
+  }
+});
+
+final darkColorThemeProvider = Provider.autoDispose<ColorTheme>((_) {
+  return const ColorTheme(
+    background: Color(0xff01080f),
+    primary: Color(0xff40c81e),
+    secondary: Color(0xffffffff),
+  );
+});
+
+final lightColorThemeProvider = Provider.autoDispose<ColorTheme>((_) {
+  return const ColorTheme(
+    background: Color(0xFFFFFFFF),
+    primary: Color(0xff578600),
+    secondary: Color(0xff1a2300),
+  );
 });
 
 final classicColorThemeProvider = Provider.autoDispose<ColorTheme>((_) {
@@ -18,14 +40,6 @@ final classicColorThemeProvider = Provider.autoDispose<ColorTheme>((_) {
     background: Color(0xff578600),
     primary: Color(0xff1a2300),
     secondary: Color(0xFFFFFFFF),
-  );
-});
-
-final alternativeColorThemeProvider = Provider.autoDispose<ColorTheme>((_) {
-  return const ColorTheme(
-    background: Color(0xFFFFFFFF),
-    primary: Color(0xff578600),
-    secondary: Color(0xff1a2300),
   );
 });
 

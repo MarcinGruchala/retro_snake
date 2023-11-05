@@ -8,7 +8,8 @@ class AssetsStrings {
   static const String sourceCode = 'Source  code';
   static const String displayMode = 'Display  Mode';
   static const String displayModeClassic = 'CLASSIC';
-  static const String displayModeAlternative = 'ALTERNATIVE';
+  static const String displayModeLight = 'LIGHT';
+  static const String displayModeDark = 'DARK';
   static const String allNew = 'All  new';
   static const String retroSnake = 'Retro  Snake';
   static const String version = '0.0.3';
