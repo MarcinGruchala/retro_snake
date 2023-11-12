@@ -1,45 +1,64 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:retro_snake/theme/color_extension.dart';
 
 import '../../../assets/assets.dart';
 import '../child_widget_size.dart';
 
-final _isHoveredProvider = StateProvider<bool>((ref) => false);
-final _sizeProvider = StateProvider<Size>((ref) => const Size(0, 0));
-
-class OnHoverText extends ConsumerWidget {
+class OnHoverText extends HookConsumerWidget {
   final String text;
+  final TextStyle? style;
+  final bool isConstantlyHovered;
 
-  const OnHoverText({super.key, required this.text});
+  const OnHoverText({
+    super.key,
+    required this.text,
+    this.style,
+    this.isConstantlyHovered = false,
+  });
 
   static final _defaultTransform = Matrix4.identity();
   static const _animationDuration = Duration(milliseconds: 200);
   static const double _scaleFactor = 1.2;
+  static const double _underlieScaleFactor = 1.4;
   static const double _translateCorrection = 2.5; // Picked experimentally
-  static const double _letterAvatarWidth = 14; // Picked experimentally
   static const double _underlineHeight = 2;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isHovered = ref.watch(_isHoveredProvider);
-    final size = ref.watch(_sizeProvider);
-    final translateX = ((size.width * _scaleFactor) - size.width);
+    final isHovered = useState(isConstantlyHovered);
+    final size = useState(Size.zero);
+    useEffect(
+      () {
+        isHovered.value = isConstantlyHovered;
+        return null;
+      },
+      [isConstantlyHovered],
+    );
+
+    final translateX = ((size.value.width * _scaleFactor) - size.value.width);
     final hoverTransform = Matrix4.identity()
       ..scale(_scaleFactor)
       ..translate(-translateX / _translateCorrection);
 
     return MouseRegion(
-      onEnter: (_) => ref.read(_isHoveredProvider.notifier).state = true,
-      onExit: (_) => ref.read(_isHoveredProvider.notifier).state = false,
+      onEnter: (_) {
+        if (isConstantlyHovered) return;
+        isHovered.value = true;
+      },
+      onExit: (_) {
+        if (isConstantlyHovered) return;
+        isHovered.value = false;
+      },
       child: Column(
         children: [
           AnimatedContainer(
             duration: _animationDuration,
-            transform: isHovered ? hoverTransform : _defaultTransform,
+            transform: isHovered.value ? hoverTransform : _defaultTransform,
             child: ChildWidgetSize(
-              whenMeasured: (size) {
-                ref.read(_sizeProvider.notifier).state = size;
+              whenMeasured: (newSize) {
+                size.value = newSize;
               },
               child: Text(
                 text,
@@ -53,7 +72,8 @@ class OnHoverText extends ConsumerWidget {
             child: AnimatedContainer(
               duration: _animationDuration,
               height: _underlineHeight,
-              width: isHovered ? text.length * _letterAvatarWidth : 0,
+              width:
+                  isHovered.value ? size.value.width * _underlieScaleFactor : 0,
               color: context.colors.primary,
             ),
           )

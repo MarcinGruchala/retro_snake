@@ -9,13 +9,14 @@ class OriginInfo extends StatelessWidget {
   const OriginInfo({super.key});
 
   final String _sourceCodeUrl = "https://github.com/MarcinGruchala/retro_snake";
-  final String sourceCode = AssetsStrings.sourceCode;
 
   @override
   Widget build(BuildContext context) {
     return InkWellTransparent(
       onTap: () => launchUrlString(_sourceCodeUrl),
-      child: OnHoverText(text: sourceCode),
+      child: const OnHoverText(
+        text: AssetsStrings.sourceCode,
+      ),
     );
   }
 }

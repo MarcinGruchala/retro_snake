@@ -16,24 +16,34 @@ class ChildWidgetSize extends StatefulWidget {
 }
 
 class _ChildWidgetSizeState extends State<ChildWidgetSize> {
+  final GlobalKey _key = GlobalKey();
+  Size? oldSize;
+
   @override
-  Widget build(BuildContext context) {
-    SchedulerBinding.instance.addPostFrameCallback(postFrameCallback);
-    return Container(
-      key: widgetKey,
-      child: widget.child,
-    );
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback(_afterLayout);
   }
 
-  final widgetKey = GlobalKey();
+  void _afterLayout(_) {
+    final Size newSize = _getSize();
+    if (oldSize == newSize) return;
 
-  void postFrameCallback(_) {
-    final context = widgetKey.currentContext;
-    if (context == null) return;
+    oldSize = newSize;
+    widget.whenMeasured(newSize);
+  }
 
-    final Size? size = context.size;
-    if (size == null) return;
+  Size _getSize() {
+    final RenderBox? renderBox = _key.currentContext
+        ?.findRenderObject() as RenderBox?;
+    return renderBox?.size ?? Size.zero;
+  }
 
-    widget.whenMeasured(size);
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      key: _key,
+      child: widget.child,
+    );
   }
 }

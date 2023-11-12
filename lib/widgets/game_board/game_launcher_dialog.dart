@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:retro_snake/assets/assets.dart';
 import 'package:retro_snake/theme/color_extension.dart';
-import 'package:retro_snake/widgets/common/text/retro_text_p1.dart';
 
 import '../common/box_decoration.dart';
-import '../common/text/retro_text_h2.dart';
+import '../common/ink_well_transparent.dart';
+import '../common/text/on_hover_text.dart';
+import '../common/text/retro_text_p1.dart';
 
 class GameLauncherDialog extends StatelessWidget {
   final Function() onStartGamePressed;
@@ -23,6 +24,7 @@ class GameLauncherDialog extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           const RetroTextP1(AssetsStrings.moveInstruction),
+          const SizedBox(height: 10),
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -32,11 +34,18 @@ class GameLauncherDialog extends StatelessWidget {
               Icon(AssetsIcons.arrowDown, color: context.colors.primary),
             ],
           ),
-          TextButton(
-            onPressed: onStartGamePressed,
-            child: const RetroTextH2(
-              AssetsStrings.startGame,
-            ),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              InkWellTransparent(
+                onTap: onStartGamePressed,
+                child: OnHoverText(
+                  text: AssetsStrings.startGame,
+                  style: AssetsFonts.p1(context.colors.primary),
+                ),
+              ),
+            ],
           ),
         ],
       ),

@@ -19,6 +19,8 @@ dependencies:
   firebase_analytics: ^10.3.0
   firebase_database: ^10.2.1
   url_launcher: ^6.1.14
+  flutter_hooks: ^0.20.3
+  hooks_riverpod: ^2.4.5
 
 
 dev_dependencies:

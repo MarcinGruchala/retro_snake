@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:retro_snake/theme/color_extension.dart';
 
 import '../assets/assets.dart';
 import '../model/enums/display_mode.dart';
 import '../provider/display_mode.dart';
+import 'common/ink_well_transparent.dart';
+import 'common/text/on_hover_text.dart';
 import 'common/text/retro_text_h2.dart';
-import 'common/text/retro_text_p1.dart';
 
 class DisplayModeWidget extends ConsumerWidget {
   const DisplayModeWidget({super.key});
@@ -55,7 +55,7 @@ class DisplayModeWidget extends ConsumerWidget {
   }
 }
 
-class DisplayModeItem extends StatelessWidget {
+class DisplayModeItem extends ConsumerWidget {
   final Function() onTap;
   final String text;
   final bool isSelected;
@@ -68,25 +68,12 @@ class DisplayModeItem extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      focusColor: Colors.transparent,
-      hoverColor: Colors.transparent,
-      highlightColor: Colors.transparent,
-      splashColor: Colors.transparent,
+  Widget build(BuildContext context, WidgetRef ref) {
+    return InkWellTransparent(
       onTap: onTap,
-      child: Row(
-        children: [
-          RetroTextP1(text),
-          const SizedBox(width: 8),
-          Visibility(
-            visible: isSelected,
-            maintainSize: true,
-            maintainAnimation: true,
-            maintainState: true,
-            child: Icon(Icons.star, color: context.colors.primary),
-          )
-        ],
+      child: OnHoverText(
+        text: text,
+        isConstantlyHovered: isSelected,
       ),
     );
   }
