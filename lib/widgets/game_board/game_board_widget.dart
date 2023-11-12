@@ -34,6 +34,7 @@ class GameBoardWidget extends ConsumerStatefulWidget {
     BuildContext context,
     Snake snake,
     Food food,
+    GameSession gameSession,
     double boardCellSize,
   ) {
     List<Widget> snakeWidgets = snake.bodyParts.asMap().entries.map((entry) {
@@ -65,6 +66,7 @@ class GameBoardWidget extends ConsumerStatefulWidget {
       yPosition: food.cellPosition.y * boardCellSize,
       size: boardCellSize,
       score: food.score,
+      isActive: gameSession.gameStatus == GameStatus.running,
     );
     return [foodWidget, ...snakeWidgets];
   }
@@ -186,7 +188,13 @@ class GameBoardWidgetState extends ConsumerState<GameBoardWidget> {
               decoration: BoxDecoration(color: context.colors.background),
               child: Stack(
                 children: [
-                  ...widget.draw(context, snake, food, boardCellSize),
+                  ...widget.draw(
+                    context,
+                    snake,
+                    food,
+                    gameSession,
+                    boardCellSize,
+                  ),
                   if (gameSession.gameStatus == GameStatus.none) ...[
                     Center(
                         child: GameLauncherDialog(
