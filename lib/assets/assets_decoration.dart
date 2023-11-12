@@ -13,3 +13,6 @@ BoxDecoration blackFrame(BuildContext context) => BoxDecoration(
       color: context.colors.primary,
       width: 3,
     ));
+
+const gameDialogWidth = 400.0;
+const gameDialogHeight = 200.0;

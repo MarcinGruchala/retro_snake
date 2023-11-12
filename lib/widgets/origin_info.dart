@@ -3,7 +3,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 import '../assets/assets.dart';
 import 'common/ink_well_transparent.dart';
-import 'common/text/on_hover_text.dart';
+import 'common/on_hover_text.dart';
 
 class OriginInfo extends StatelessWidget {
   const OriginInfo({super.key});

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:retro_snake/widgets/common/text/retro_text_h2.dart';
-import 'package:retro_snake/widgets/common/text/retro_text_p1.dart';
+import 'package:retro_snake/theme/color_extension.dart';
 
 import '../assets/assets.dart';
 import '../provider/game_stats/games_stats_provider.dart';
@@ -9,30 +8,48 @@ import '../provider/game_stats/games_stats_provider.dart';
 class GameStatsWidget extends ConsumerWidget {
   const GameStatsWidget({super.key});
 
-  Widget watchGamesPlayed(WidgetRef ref) {
+  Widget watchGamesPlayed(BuildContext context, WidgetRef ref) {
     return ref.watch(gamesPlayedProvider).when(
       data: (data) {
-        return RetroTextP1(AssetsStrings.gamesPlayed(data.toString()));
+        return Text(
+          AssetsStrings.gamesPlayed(data.toString()),
+          style: AssetsFonts.p1(context.colors.primary),
+        );
       },
       error: (error, stackTrace) {
-        return RetroTextP1(AssetsStrings.gamesPlayed('...'));
+        return Text(
+          AssetsStrings.gamesPlayed('...'),
+          style: AssetsFonts.p1(context.colors.primary),
+        );
       },
       loading: () {
-        return RetroTextP1(AssetsStrings.gamesPlayed('...'));
+        return Text(
+          AssetsStrings.gamesPlayed('...'),
+          style: AssetsFonts.p1(context.colors.primary),
+        );
       },
     );
   }
 
-  Widget watchRecordOverall(WidgetRef ref) {
+  Widget watchRecordOverall(BuildContext context, WidgetRef ref) {
     return ref.watch(recordOverallProvider).when(
       data: (data) {
-        return RetroTextP1(AssetsStrings.recordOverall(data.toString()));
+        return Text(
+          AssetsStrings.recordOverall(data.toString()),
+          style: AssetsFonts.p1(context.colors.primary),
+        );
       },
       error: (error, stackTrace) {
-        return RetroTextP1(AssetsStrings.recordOverall('...'));
+        return Text(
+          AssetsStrings.recordOverall('...'),
+          style: AssetsFonts.p1(context.colors.primary),
+        );
       },
       loading: () {
-        return RetroTextP1(AssetsStrings.recordOverall('...'));
+        return Text(
+          AssetsStrings.recordOverall('...'),
+          style: AssetsFonts.p1(context.colors.primary),
+        );
       },
     );
   }
@@ -47,14 +64,17 @@ class GameStatsWidget extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const RetroTextH2(AssetsStrings.gameStats),
+            Text(
+              AssetsStrings.gameStats,
+              style: AssetsFonts.h2(context.colors.primary),
+            ),
             const SizedBox(height: 8),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                watchGamesPlayed(ref),
+                watchGamesPlayed(context, ref),
                 const SizedBox(height: 8),
-                watchRecordOverall(ref),
+                watchRecordOverall(context, ref),
               ],
             ),
           ],

@@ -4,8 +4,7 @@ import 'package:retro_snake/theme/color_extension.dart';
 
 import '../common/box_decoration.dart';
 import '../common/ink_well_transparent.dart';
-import '../common/text/on_hover_text.dart';
-import '../common/text/retro_text_p1.dart';
+import '../common/on_hover_text.dart';
 
 class GameLauncherDialog extends StatelessWidget {
   final Function() onStartGamePressed;
@@ -18,12 +17,18 @@ class GameLauncherDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: gameDialogWidth,
+      height: gameDialogHeight,
       decoration: boardDialogDecoration(context),
       padding: const EdgeInsets.all(20),
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const RetroTextP1(AssetsStrings.moveInstruction),
+          Text(
+            AssetsStrings.moveInstruction,
+            style: AssetsFonts.p1(context.colors.primary),
+          ),
           const SizedBox(height: 10),
           Row(
             mainAxisSize: MainAxisSize.min,

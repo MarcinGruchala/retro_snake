@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:retro_snake/assets/assets.dart';
-import 'package:retro_snake/widgets/common/text/retro_text_p1.dart';
+import 'package:retro_snake/theme/color_extension.dart';
 
+
+import '../../assets/assets.dart';
 import '../common/box_decoration.dart';
-import '../common/text/retro_text_h2.dart';
+import '../common/ink_well_transparent.dart';
+import '../common/on_hover_text.dart';
 
 class GameOverDialog extends StatelessWidget {
   final Function() onTryAgain;
@@ -16,24 +18,30 @@ class GameOverDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: gameDialogWidth,
+      height: gameDialogHeight,
       padding: const EdgeInsets.all(30),
       decoration: boardDialogDecoration(context),
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const RetroTextH2(
+          Text(
             AssetsStrings.gameOver,
+            style: AssetsFonts.h2(context.colors.primary),
           ),
           const SizedBox(height: 10),
           if (isRecord)
-            const RetroTextH2(
+            Text(
               AssetsStrings.newRecord,
+              style: AssetsFonts.h2(context.colors.primary),
             ),
           const SizedBox(height: 20),
-          TextButton(
-            onPressed: onTryAgain,
-            child: const RetroTextP1(
-              AssetsStrings.tryAgain,
+          InkWellTransparent(
+            onTap: onTryAgain,
+            child: OnHoverText(
+              text: AssetsStrings.tryAgain,
+              style: AssetsFonts.p1(context.colors.primary),
             ),
           ),
         ],

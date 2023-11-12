@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:retro_snake/theme/color_extension.dart';
 
-import 'common/text/retro_text.dart';
+import '../assets/assets_fonts.dart';
 
 class FoodWidget extends StatefulWidget {
   final double xPosition;
   final double yPosition;
   final double size;
   final int score;
-
-  static const scaleAnimationSize = 0.6;
 
   const FoodWidget({
     Key? key,
@@ -27,11 +25,15 @@ class _FoodWidgetState extends State<FoodWidget>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
 
+  static const _scaleAnimationSize = 0.6;
+  static const _animationDuration = Duration(milliseconds: 700);
+  static const _fontSizeFactor = 0.6;
+
   @override
   void initState() {
     super.initState();
     _animationController = AnimationController(
-      duration: const Duration(milliseconds: 700),
+      duration: _animationDuration,
       vsync: this,
     )..repeat(reverse: true);
   }
@@ -50,8 +52,8 @@ class _FoodWidgetState extends State<FoodWidget>
       child: AnimatedBuilder(
         animation: _animationController,
         builder: (context, child) {
-          double scale = FoodWidget.scaleAnimationSize +
-              (_animationController.value * FoodWidget.scaleAnimationSize);
+          double scale = _scaleAnimationSize +
+              (_animationController.value * _scaleAnimationSize);
           return Transform.scale(
             scale: scale,
             child: child,
@@ -66,10 +68,12 @@ class _FoodWidgetState extends State<FoodWidget>
           width: widget.size,
           height: widget.size,
           child: Center(
-            child: RetroText(
+            child: Text(
               widget.score.toString(),
-              color: context.colors.background,
-              fontSize: widget.size * 0.6,
+              style: AssetsFonts.p(
+                context.colors.background,
+                widget.size * _fontSizeFactor,
+              ),
             ),
           ),
         ),

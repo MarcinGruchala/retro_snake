@@ -3,8 +3,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:retro_snake/theme/color_extension.dart';
 
-import '../../../assets/assets.dart';
-import '../child_widget_size.dart';
+import '../../assets/assets.dart';
+import 'child_widget_size.dart';
 
 class OnHoverText extends HookConsumerWidget {
   final String text;

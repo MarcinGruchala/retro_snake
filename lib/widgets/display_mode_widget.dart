@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:retro_snake/theme/color_extension.dart';
 
 import '../assets/assets.dart';
 import '../model/enums/display_mode.dart';
 import '../provider/display_mode.dart';
 import 'common/ink_well_transparent.dart';
-import 'common/text/on_hover_text.dart';
-import 'common/text/retro_text_h2.dart';
+import 'common/on_hover_text.dart';
 
 class DisplayModeWidget extends ConsumerWidget {
   const DisplayModeWidget({super.key});
@@ -23,7 +23,10 @@ class DisplayModeWidget extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const RetroTextH2(AssetsStrings.displayMode),
+          Text(
+            AssetsStrings.displayMode,
+            style: AssetsFonts.h2(context.colors.primary),
+          ),
           const SizedBox(height: 20),
           DisplayModeItem(
             onTap: () {
