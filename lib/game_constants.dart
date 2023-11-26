@@ -3,6 +3,7 @@ import 'package:retro_snake/model/food.dart';
 import 'model/cell_position.dart';
 import 'model/enums/direction.dart';
 import 'model/enums/snake_body_part_type.dart';
+import 'model/portal/portal.dart';
 import 'provider/snake/snake.dart';
 import 'model/snake_body_part.dart';
 
@@ -39,6 +40,17 @@ class GameConstants {
     eat: false,
   );
   static const foodDefaultScore = 20;
-  static const defaultFood = Food(cellPosition: CellPosition(x: 15, y: 15), score: foodDefaultScore);
+  static const defaultFood =
+      Food(cellPosition: CellPosition(x: 15, y: 15), score: foodDefaultScore);
+  static const defaultPortals = [
+    Portal(
+      positionOne: CellPosition(x: 3, y: 3),
+      positionTwo: CellPosition(x: 16, y: 16),
+    ),
+    Portal(
+      positionOne: CellPosition(x: 16, y: 3),
+      positionTwo: CellPosition(x: 3, y: 16),
+    )
+  ];
   static const gameFrameDuration = Duration(milliseconds: 150);
 }

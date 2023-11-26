@@ -4,7 +4,7 @@ import 'package:retro_snake/theme/color_extension.dart';
 
 import '../assets/assets.dart';
 import '../model/enums/display_mode.dart';
-import '../provider/display_mode.dart';
+import '../provider/settings.dart';
 import 'common/ink_well_transparent.dart';
 import 'common/on_hover_text.dart';
 
