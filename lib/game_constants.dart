@@ -39,7 +39,7 @@ class GameConstants {
     ],
     eat: false,
   );
-  static const foodDefaultScore = 20;
+  static const foodDefaultScore = 40;
   static const defaultFood =
       Food(cellPosition: CellPosition(x: 15, y: 15), score: foodDefaultScore);
   static const defaultPortals = [
