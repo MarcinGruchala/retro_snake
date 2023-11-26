@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
+import 'package:retro_snake/theme/color_extension.dart';
 
-import '../../assets/assets.dart';
-
-final BoxDecoration boardDialogDecoration = BoxDecoration(
-    color: AssetsColors.darkGreen,
-    border: Border.all(color: AssetsColors.black, width: 3));
+BoxDecoration boardDialogDecoration(BuildContext context) => BoxDecoration(
+      color: context.colors.background,
+      border: Border.all(color: context.colors.primary, width: 3),
+    );

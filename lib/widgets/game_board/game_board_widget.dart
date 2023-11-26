@@ -1,39 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:retro_snake/assets/assets.dart';
-import 'package:retro_snake/assets/assets_decoration.dart';
-import 'package:retro_snake/model/enums/game_status.dart';
-import 'package:retro_snake/provider/food/food_notifier.dart';
-import 'package:retro_snake/provider/food/food_provider.dart';
-import 'package:retro_snake/provider/game_session/game_session.dart';
-import 'package:retro_snake/provider/game_session/game_session_notifier.dart';
-import 'package:retro_snake/provider/game_session/game_session_provider.dart';
-import 'package:retro_snake/provider/snake/snake_notifier.dart';
-import 'package:retro_snake/provider/snake/snake_provider.dart';
-import 'package:retro_snake/utils/update_games_played.dart';
-import 'package:retro_snake/widgets/food_widget.dart';
-import 'package:retro_snake/widgets/game_board/game_board_state.dart';
-import 'package:retro_snake/widgets/game_board/game_launcher_dialog.dart';
-import 'package:retro_snake/widgets/game_board/game_over_dialog.dart';
-import 'package:retro_snake/widgets/snake/snake_round_widget.dart';
+import 'package:retro_snake/theme/color_extension.dart';
 
+import '../../assets/assets.dart';
 import '../../game_constants.dart';
 import '../../model/enums/direction.dart';
+import '../../model/enums/game_status.dart';
 import '../../model/enums/snake_body_part_type.dart';
 import '../../model/food.dart';
+import '../../model/game_board_state/game_board_state.dart';
+import '../../model/portal/portal.dart';
+import '../../provider/food/food_notifier.dart';
+import '../../provider/food/food_provider.dart';
 import '../../provider/game_board_state_provider.dart';
+import '../../provider/game_session/game_session.dart';
+import '../../provider/game_session/game_session_notifier.dart';
+import '../../provider/game_session/game_session_provider.dart';
 import '../../provider/snake/snake.dart';
+import '../../provider/snake/snake_notifier.dart';
+import '../../provider/snake/snake_provider.dart';
 import '../../utils/hit_detection.dart';
 import '../../utils/input_and_direction.dart';
+import '../food_widget.dart';
 import '../snake/snake_body_part_widget.dart';
+import '../snake/snake_round_widget.dart';
+import 'game_launcher_dialog.dart';
+import 'game_over_dialog.dart';
 
 class GameBoardWidget extends ConsumerStatefulWidget {
   const GameBoardWidget({Key? key}) : super(key: key);
 
   List<Widget> draw(
+    BuildContext context,
     Snake snake,
     Food food,
+    GameSession gameSession,
+    List<Portal> portals,
     double boardCellSize,
   ) {
     List<Widget> snakeWidgets = snake.bodyParts.asMap().entries.map((entry) {
@@ -42,7 +45,7 @@ class GameBoardWidget extends ConsumerStatefulWidget {
             xPosition: entry.value.cellPosition.x * boardCellSize,
             yPosition: entry.value.cellPosition.y * boardCellSize,
             size: boardCellSize,
-            color: AssetsColors.black,
+            color: context.colors.primary,
             direction: snake.direction);
       }
       if (entry.key == snake.bodyParts.length - 1) {
@@ -51,13 +54,13 @@ class GameBoardWidget extends ConsumerStatefulWidget {
             yPosition: entry.value.cellPosition.y * boardCellSize,
             size: boardCellSize,
             direction: snake.calculateTailDirection(),
-            color: AssetsColors.black);
+            color: context.colors.primary);
       }
       return SnakeBodyPartWidget(
         xPosition: entry.value.cellPosition.x * boardCellSize,
         yPosition: entry.value.cellPosition.y * boardCellSize,
         size: boardCellSize,
-        color: AssetsColors.black,
+        color: context.colors.primary,
       );
     }).toList();
     Widget foodWidget = FoodWidget(
@@ -65,8 +68,23 @@ class GameBoardWidget extends ConsumerStatefulWidget {
       yPosition: food.cellPosition.y * boardCellSize,
       size: boardCellSize,
       score: food.score,
+      isActive: gameSession.gameStatus == GameStatus.running,
     );
-    return [foodWidget, ...snakeWidgets];
+    List<Widget> portalWidgets = portals
+        .map(
+          (e) => e.mapToPortalWidgets(
+              boardCellSize: boardCellSize,
+              isActive: gameSession.gameStatus == GameStatus.running),
+        )
+        .toList()
+        .expand((element) => element)
+        .toList();
+
+    return [
+      foodWidget,
+      ...portalWidgets,
+      ...snakeWidgets,
+    ];
   }
 
   @override
@@ -89,6 +107,7 @@ class GameBoardWidgetState extends ConsumerState<GameBoardWidget> {
   void _performGameFrame() {
     SnakeNotifier snakeNotifier = ref.read(snakeProvider.notifier);
     FoodNotifier foodNotifier = ref.read(foodProvider.notifier);
+    List<Portal> portals = GameConstants.defaultPortals;
     GameSessionNotifier gameSessionNotifier =
         ref.read(gameSessionProvider.notifier);
 
@@ -96,7 +115,7 @@ class GameBoardWidgetState extends ConsumerState<GameBoardWidget> {
 
     if (gameBoardState.gameSession.gameStatus == GameStatus.running) {
       _updateSnakeDirection(gameBoardState.snake, snakeNotifier);
-      snakeNotifier.moveSnake();
+      snakeNotifier.moveSnake(portals);
       _handleHitDetection(gameBoardState.snake, gameSessionNotifier);
       _handleFood(
         gameBoardState,
@@ -131,7 +150,7 @@ class GameBoardWidgetState extends ConsumerState<GameBoardWidget> {
     if (_checkFoodHit(gameBoardState.snake, gameBoardState.food)) {
       snakeNotifier.eat();
       gameSessionNotifier.addScore(gameBoardState.food.score);
-      foodNotifier.generateNewFood(gameBoardState.snake);
+      foodNotifier.generateNewFood(gameBoardState);
     }
     foodNotifier.lowerScoreIfPossible();
   }
@@ -159,6 +178,7 @@ class GameBoardWidgetState extends ConsumerState<GameBoardWidget> {
     GameBoardState gameBoardState = ref.watch(gameBoardStateProvider);
     Snake snake = gameBoardState.snake;
     Food food = gameBoardState.food;
+    List<Portal> portals = gameBoardState.portals;
     GameSession gameSession = gameBoardState.gameSession;
 
     return RawKeyboardListener(
@@ -176,17 +196,24 @@ class GameBoardWidgetState extends ConsumerState<GameBoardWidget> {
         children: [
           Text(
             AssetsStrings.score(gameSession.score),
-            style: AssetsFonts.h1(AssetsColors.black),
+            style: AssetsFonts.h1(context.colors.primary),
           ),
           Container(
-            decoration: AssetsDecoration.blackContainer,
+            decoration: blackContainer(context),
             child: Container(
               width: boardSize,
               height: boardSize,
-              decoration: const BoxDecoration(color: AssetsColors.darkGreen),
+              decoration: BoxDecoration(color: context.colors.background),
               child: Stack(
                 children: [
-                  ...widget.draw(snake, food, boardCellSize),
+                  ...widget.draw(
+                    context,
+                    snake,
+                    food,
+                    gameSession,
+                    portals,
+                    boardCellSize,
+                  ),
                   if (gameSession.gameStatus == GameStatus.none) ...[
                     Center(
                         child: GameLauncherDialog(
