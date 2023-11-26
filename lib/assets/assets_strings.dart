@@ -7,6 +7,10 @@ class AssetsStrings {
   static const String newRecord = 'New  record  !!!';
   static const String sourceCode = 'Source  code';
   static const String displayMode = 'Display  Mode';
+  static const String settings = 'Settings';
+  static const String on = 'ON';
+  static const String off = 'OFF';
+  static const String portals = 'Portals';
   static const String displayModeClassic = 'CLASSIC';
   static const String displayModeLight = 'LIGHT';
   static const String displayModeDark = 'DARK';
