@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:retro_snake/theme/color_extension.dart';
 import 'package:retro_snake/widgets/display_mode_widget.dart';
 import 'package:retro_snake/widgets/game_title_widget.dart';
+import 'package:retro_snake/widgets/settings_widget.dart';
 
 import 'widgets/game_board/game_board_widget.dart';
 import 'widgets/game_stats_widget.dart';
@@ -35,7 +36,9 @@ class HomePage extends ConsumerWidget {
                         SizedBox(height: 20),
                         GameStatsWidget(),
                         SizedBox(height: 20),
-                        DisplayModeWidget()
+                        DisplayModeWidget(),
+                        SizedBox(height: 20),
+                        SettingsWidget()
                       ],
                     ),
                   ),

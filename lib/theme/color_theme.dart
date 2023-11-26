@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../model/enums/display_mode.dart';
-import '../provider/display_mode.dart';
+import '../provider/settings.dart';
 
 final colorThemeProvider = Provider.autoDispose<ColorTheme>((ref) {
   final classicColorTheme = ref.read(classicColorThemeProvider);
