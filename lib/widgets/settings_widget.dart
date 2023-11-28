@@ -21,6 +21,7 @@ class SettingsWidget extends ConsumerWidget {
       decoration: blackFrame(context),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Text(
             AssetsStrings.settings,
@@ -66,16 +67,14 @@ class SettingsItem extends StatelessWidget {
           text,
           style: AssetsFonts.p1(context.colors.primary),
         ),
-        Center(
-          child: Expanded(
-            child: InkWellTransparent(
-              onTap: () {
-                if (isEnabled) onTap();
-              },
-              child: OnHoverText(
-                text: isSelected ? AssetsStrings.on : AssetsStrings.off,
-                isConstantlyHovered: isSelected,
-              ),
+        Flexible(
+          child: InkWellTransparent(
+            onTap: () {
+              if (isEnabled) onTap();
+            },
+            child: OnHoverText(
+              text: isSelected ? AssetsStrings.on : AssetsStrings.off,
+              isConstantlyHovered: isSelected,
             ),
           ),
         )

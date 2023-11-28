@@ -16,7 +16,7 @@ class AssetsStrings {
   static const String displayModeDark = 'DARK';
   static const String allNew = 'All  new';
   static const String retroSnake = 'Retro  Snake';
-  static const String version = '0.0.3';
+  static const String version = '0.3.0';
 
   static String score(int score) => 'Score $score';
 
