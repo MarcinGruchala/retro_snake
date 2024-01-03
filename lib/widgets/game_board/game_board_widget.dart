@@ -107,7 +107,7 @@ class GameBoardWidgetState extends ConsumerState<GameBoardWidget> {
   void _performGameFrame() {
     SnakeNotifier snakeNotifier = ref.read(snakeProvider.notifier);
     FoodNotifier foodNotifier = ref.read(foodProvider.notifier);
-    List<Portal> portals = GameConstants.defaultPortals;
+    List<Portal> portals = ref.read(gameBoardStateProvider).portals;
     GameSessionNotifier gameSessionNotifier =
         ref.read(gameSessionProvider.notifier);
 

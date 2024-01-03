@@ -56,7 +56,7 @@ class SnakeNotifier extends StateNotifier<Snake> {
     List<Portal> portals,
   ) {
     final PortalInList? portalInList =
-        _checkIfBodyPartIsInPortals(head, GameConstants.defaultPortals);
+        _checkIfBodyPartIsInPortals(head, portals);
 
     if (portalInList != null) {
       return SnakeBodyPart(

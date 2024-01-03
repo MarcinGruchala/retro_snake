@@ -13,7 +13,7 @@ Future<void> main() async {
   FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.instance;
   firebaseAnalytics.setAnalyticsCollectionEnabled(true);
 
-  runApp(const ProviderScope(child: MyApp()));
+  runApp(const ProviderScope(child:  MyApp()));
 }
 
 class MyApp extends ConsumerWidget {

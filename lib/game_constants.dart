@@ -31,8 +31,9 @@ class GameConstants {
           cellPosition: CellPosition(x: 4, y: 5),
           bodyPartType: SnakeBodyPartType.body),
       SnakeBodyPart(
-          cellPosition: CellPosition(x: 3, y: 5),
-          bodyPartType: SnakeBodyPartType.body),
+        cellPosition: CellPosition(x: 3, y: 5),
+        bodyPartType: SnakeBodyPartType.body,
+      ),
       SnakeBodyPart(
           cellPosition: CellPosition(x: 2, y: 5),
           bodyPartType: SnakeBodyPartType.body),
