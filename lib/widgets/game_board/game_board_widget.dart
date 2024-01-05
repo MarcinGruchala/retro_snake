@@ -31,6 +31,7 @@ import 'game_over_dialog.dart';
 class GameBoardWidget extends ConsumerStatefulWidget {
   const GameBoardWidget({Key? key}) : super(key: key);
 
+  //TODO: This should be moved to a separate widget
   List<Widget> draw(
     BuildContext context,
     Snake snake,
@@ -104,7 +105,7 @@ class GameBoardWidgetState extends ConsumerState<GameBoardWidget> {
     });
   }
 
-  void _performGameFrame() {
+  Future<void> _performGameFrame() async {
     SnakeNotifier snakeNotifier = ref.read(snakeProvider.notifier);
     FoodNotifier foodNotifier = ref.read(foodProvider.notifier);
     List<Portal> portals = ref.read(gameBoardStateProvider).portals;
@@ -115,8 +116,11 @@ class GameBoardWidgetState extends ConsumerState<GameBoardWidget> {
 
     if (gameBoardState.gameSession.gameStatus == GameStatus.running) {
       _updateSnakeDirection(gameBoardState.snake, snakeNotifier);
+      if (_isHitDetected(gameBoardState.snake, gameSessionNotifier)) {
+        await gameSessionNotifier.finishGame();
+        return;
+      }
       snakeNotifier.moveSnake(portals);
-      _handleHitDetection(gameBoardState.snake, gameSessionNotifier);
       _handleFood(
         gameBoardState,
         snakeNotifier,
@@ -134,11 +138,14 @@ class GameBoardWidgetState extends ConsumerState<GameBoardWidget> {
     }
   }
 
-  Future<void> _handleHitDetection(
-      Snake snake, GameSessionNotifier gameSessionNotifier) async {
+  bool _isHitDetected(
+    Snake snake,
+    GameSessionNotifier gameSessionNotifier,
+  ) {
     if (checkSnakeHit(snake) || checkWallHit(snake.head.cellPosition)) {
-      await gameSessionNotifier.finishGame();
+      return true;
     }
+    return false;
   }
 
   void _handleFood(

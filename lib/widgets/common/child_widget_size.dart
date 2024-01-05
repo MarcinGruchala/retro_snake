@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 
 class ChildWidgetSize extends StatefulWidget {
   final Widget child;
@@ -12,10 +11,10 @@ class ChildWidgetSize extends StatefulWidget {
   });
 
   @override
-  _ChildWidgetSizeState createState() => _ChildWidgetSizeState();
+  ChildWidgetSizeState createState() => ChildWidgetSizeState();
 }
 
-class _ChildWidgetSizeState extends State<ChildWidgetSize> {
+class ChildWidgetSizeState extends State<ChildWidgetSize> {
   final GlobalKey _key = GlobalKey();
   Size? oldSize;
 
@@ -34,8 +33,8 @@ class _ChildWidgetSizeState extends State<ChildWidgetSize> {
   }
 
   Size _getSize() {
-    final RenderBox? renderBox = _key.currentContext
-        ?.findRenderObject() as RenderBox?;
+    final RenderBox? renderBox =
+        _key.currentContext?.findRenderObject() as RenderBox?;
     return renderBox?.size ?? Size.zero;
   }
 
