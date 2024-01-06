@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:retro_snake/theme/color_extension.dart';
 
+
 import '../../assets/assets.dart';
 import '../../game_constants.dart';
 import '../../model/enums/direction.dart';
@@ -20,6 +21,7 @@ import '../../provider/game_session/game_session_provider.dart';
 import '../../provider/snake/snake.dart';
 import '../../provider/snake/snake_notifier.dart';
 import '../../provider/snake/snake_provider.dart';
+import '../../utils/calculate_board_size.dart';
 import '../../utils/hit_detection.dart';
 import '../../utils/input_and_direction.dart';
 import '../food_widget.dart';
@@ -31,62 +33,7 @@ import 'game_over_dialog.dart';
 class GameBoardWidget extends ConsumerStatefulWidget {
   const GameBoardWidget({Key? key}) : super(key: key);
 
-  //TODO: This should be moved to a separate widget
-  List<Widget> draw(
-    BuildContext context,
-    Snake snake,
-    Food food,
-    GameSession gameSession,
-    List<Portal> portals,
-    double boardCellSize,
-  ) {
-    List<Widget> snakeWidgets = snake.bodyParts.asMap().entries.map((entry) {
-      if (entry.value.bodyPartType == SnakeBodyPartType.head) {
-        return SnakeRoundWidget(
-            xPosition: entry.value.cellPosition.x * boardCellSize,
-            yPosition: entry.value.cellPosition.y * boardCellSize,
-            size: boardCellSize,
-            color: context.colors.primary,
-            direction: snake.direction);
-      }
-      if (entry.key == snake.bodyParts.length - 1) {
-        return SnakeRoundWidget(
-            xPosition: entry.value.cellPosition.x * boardCellSize,
-            yPosition: entry.value.cellPosition.y * boardCellSize,
-            size: boardCellSize,
-            direction: snake.calculateTailDirection(),
-            color: context.colors.primary);
-      }
-      return SnakeBodyPartWidget(
-        xPosition: entry.value.cellPosition.x * boardCellSize,
-        yPosition: entry.value.cellPosition.y * boardCellSize,
-        size: boardCellSize,
-        color: context.colors.primary,
-      );
-    }).toList();
-    Widget foodWidget = FoodWidget(
-      xPosition: food.cellPosition.x * boardCellSize,
-      yPosition: food.cellPosition.y * boardCellSize,
-      size: boardCellSize,
-      score: food.score,
-      isActive: gameSession.gameStatus == GameStatus.running,
-    );
-    List<Widget> portalWidgets = portals
-        .map(
-          (e) => e.mapToPortalWidgets(
-              boardCellSize: boardCellSize,
-              isActive: gameSession.gameStatus == GameStatus.running),
-        )
-        .toList()
-        .expand((element) => element)
-        .toList();
-
-    return [
-      foodWidget,
-      ...portalWidgets,
-      ...snakeWidgets,
-    ];
-  }
+  static const scoreHeightBreakpoint = 430;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() {
@@ -179,7 +126,10 @@ class GameBoardWidgetState extends ConsumerState<GameBoardWidget> {
 
   @override
   Widget build(BuildContext context) {
-    double boardSize = MediaQuery.of(context).size.height * 0.8;
+    double boardSize = calculateBoardSize(
+      MediaQuery.of(context).size.width,
+      MediaQuery.of(context).size.height,
+    );
     double boardCellSize = boardSize / GameConstants.boardCellsNumber;
 
     GameBoardState gameBoardState = ref.watch(gameBoardStateProvider);
@@ -200,11 +150,15 @@ class GameBoardWidgetState extends ConsumerState<GameBoardWidget> {
       focusNode: FocusNode(),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            AssetsStrings.score(gameSession.score),
-            style: AssetsFonts.h1(context.colors.primary),
-          ),
+          if (MediaQuery.of(context).size.height >
+              GameBoardWidget.scoreHeightBreakpoint)
+            Text(
+              AssetsStrings.score(gameSession.score),
+              style: AssetsFonts.h1(context.colors.primary),
+            ),
           Container(
             decoration: blackContainer(context),
             child: Container(
@@ -213,13 +167,12 @@ class GameBoardWidgetState extends ConsumerState<GameBoardWidget> {
               decoration: BoxDecoration(color: context.colors.background),
               child: Stack(
                 children: [
-                  ...widget.draw(
-                    context,
-                    snake,
-                    food,
-                    gameSession,
-                    portals,
-                    boardCellSize,
+                  GameElements(
+                    snake: snake,
+                    food: food,
+                    gameSession: gameSession,
+                    portals: portals,
+                    boardCellSize: boardCellSize,
                   ),
                   if (gameSession.gameStatus == GameStatus.none) ...[
                     Center(
@@ -239,6 +192,95 @@ class GameBoardWidgetState extends ConsumerState<GameBoardWidget> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class GameElements extends StatelessWidget {
+  final Snake snake;
+  final Food food;
+  final GameSession gameSession;
+  final List<Portal> portals;
+  final double boardCellSize;
+
+  const GameElements({
+    super.key,
+    required this.snake,
+    required this.food,
+    required this.gameSession,
+    required this.portals,
+    required this.boardCellSize,
+  });
+
+  List<Widget> draw(
+    BuildContext context,
+    Snake snake,
+    Food food,
+    GameSession gameSession,
+    List<Portal> portals,
+    double boardCellSize,
+  ) {
+    List<Widget> snakeWidgets = snake.bodyParts.asMap().entries.map((entry) {
+      if (entry.value.bodyPartType == SnakeBodyPartType.head) {
+        return SnakeRoundWidget(
+            xPosition: entry.value.cellPosition.x * boardCellSize,
+            yPosition: entry.value.cellPosition.y * boardCellSize,
+            size: boardCellSize,
+            color: context.colors.primary,
+            direction: snake.direction);
+      }
+      if (entry.key == snake.bodyParts.length - 1) {
+        return SnakeRoundWidget(
+            xPosition: entry.value.cellPosition.x * boardCellSize,
+            yPosition: entry.value.cellPosition.y * boardCellSize,
+            size: boardCellSize,
+            direction: snake.calculateTailDirection(),
+            color: context.colors.primary);
+      }
+      return SnakeBodyPartWidget(
+        xPosition: entry.value.cellPosition.x * boardCellSize,
+        yPosition: entry.value.cellPosition.y * boardCellSize,
+        size: boardCellSize,
+        color: context.colors.primary,
+      );
+    }).toList();
+    Widget foodWidget = FoodWidget(
+      xPosition: food.cellPosition.x * boardCellSize,
+      yPosition: food.cellPosition.y * boardCellSize,
+      size: boardCellSize,
+      score: food.score,
+      isActive: gameSession.gameStatus == GameStatus.running,
+    );
+    List<Widget> portalWidgets = portals
+        .map(
+          (e) => e.mapToPortalWidgets(
+              boardCellSize: boardCellSize,
+              isActive: gameSession.gameStatus == GameStatus.running),
+        )
+        .toList()
+        .expand((element) => element)
+        .toList();
+
+    return [
+      foodWidget,
+      ...portalWidgets,
+      ...snakeWidgets,
+    ];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        ...draw(
+          context,
+          snake,
+          food,
+          gameSession,
+          portals,
+          boardCellSize,
+        ),
+      ],
     );
   }
 }

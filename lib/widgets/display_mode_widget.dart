@@ -26,6 +26,7 @@ class DisplayModeWidget extends ConsumerWidget {
           Text(
             AssetsStrings.displayMode,
             style: AssetsFonts.h2(context.colors.primary),
+            textAlign: TextAlign.center,
           ),
           const SizedBox(height: 20),
           DisplayModeItem(
