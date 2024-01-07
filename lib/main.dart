@@ -3,7 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'firebase_options.dart';
+import 'firebase/firebase_options.dart';
 import 'home_page.dart';
 import 'theme/theme_provider.dart';
 
@@ -13,7 +13,7 @@ Future<void> main() async {
   FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.instance;
   firebaseAnalytics.setAnalyticsCollectionEnabled(true);
 
-  runApp(const ProviderScope(child: MyApp()));
+  runApp(const ProviderScope(child:  MyApp()));
 }
 
 class MyApp extends ConsumerWidget {
